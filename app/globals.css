@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+/* 灰階中性底色，襯線字體，純色不加圖案 */
+@theme {
+  --color-cream: #f2f3f5;
+  --color-sand: #e7e9ec;
+  --color-clay: #d9dce1;
+  --color-sage: #b97452;
+  --color-sage-dark: #8a3a47;
+  --color-moss: #5b1e2c;
+  --color-gold: #e1ebdd;
+  --color-forest: #2f4a34;
+  --color-ink: #2b2a26;
+  --color-muted: #8a857b;
+
+  --font-serif: "Noto Serif TC", "Songti TC", "PingFang TC", Georgia, serif;
+  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui,
+    sans-serif;
+}
+
+:root {
+  --background: var(--color-cream);
+  --foreground: var(--color-ink);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-clay);
+  border-radius: 999px;
+}
