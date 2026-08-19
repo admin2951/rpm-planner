@@ -1,15 +1,17 @@
 // RPM 系統 — 資料庫結構
-// 本機開發使用 SQLite。日後部署到 Vercel + Supabase 時，
-// 把 provider 改成 "postgresql"，url 改用 POSTGRES_PRISMA_URL，
-// directUrl 改用 POSTGRES_URL_NON_POOLING（Vercel 的 Supabase 整合會自動填入）。
+// 部署於 Vercel + Supabase（PostgreSQL）。
+// POSTGRES_PRISMA_URL：Supabase 提供的 pooled 連線（執行期查詢用）
+// POSTGRES_URL_NON_POOLING：Supabase 提供的直連（migrate / db push 用）
+// 兩者由 Vercel 的 Supabase 整合自動填入（本機開發用 .env.local 裡的同一組值）。
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // ── 使用者（單人使用，僅由 seed 建立一個帳號）───────────
