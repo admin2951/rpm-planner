@@ -1,7 +1,7 @@
 "use client";
 
 import type { Task, TaskStatus } from "@prisma/client";
-import { quickUpdateTaskAction, deleteTaskAction } from "@/app/actions/tasks";
+import { quickUpdateTaskAction, deleteTaskAction, toggleTaskDoneAction } from "@/app/actions/tasks";
 import { toDateKey, formatShortDate } from "@/lib/date";
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
@@ -10,7 +10,7 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
   DONE: "已完成",
 };
 
-const GRID_COLS = "grid-cols-[40px_1fr_100px_90px_140px_1fr_44px]";
+const GRID_COLS = "grid-cols-[28px_40px_1fr_100px_90px_140px_1fr_44px]";
 
 function submitOnEvent(e: React.SyntheticEvent<HTMLInputElement | HTMLSelectElement>) {
   e.currentTarget.form?.requestSubmit();
@@ -20,6 +20,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-clay bg-white">
       <div className={`grid ${GRID_COLS} gap-x-2 border-b border-clay/60 bg-sand/60 px-3 py-2 text-xs font-semibold text-muted`}>
+        <div />
         <div>順序</div>
         <div>任務</div>
         <div>狀態</div>
@@ -43,6 +44,19 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
           <div
             className={`grid ${GRID_COLS} col-span-full items-center gap-x-2 border-b border-clay/40 px-3 py-1.5 last:border-b-0`}
           >
+            <button
+              type="submit"
+              formAction={toggleTaskDoneAction}
+              aria-label={t.status === "DONE" ? "標記為未完成" : "標記為完成"}
+              className={
+                "flex h-5 w-5 items-center justify-center rounded-full border text-xs transition " +
+                (t.status === "DONE"
+                  ? "border-sage-dark bg-sage-dark text-cream"
+                  : "border-clay text-transparent hover:border-sage-dark")
+              }
+            >
+              ✓
+            </button>
             <span className="text-xs text-muted">{i + 1}</span>
             <input
               name="title"
