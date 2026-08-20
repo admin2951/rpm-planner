@@ -1,9 +1,9 @@
 import type { Priority } from "@prisma/client";
 
 const LABEL: Record<Priority, string> = {
-  MUST: "必須",
-  SHOULD: "應該",
-  COULD: "可以",
+  MUST: "急",
+  SHOULD: "中",
+  COULD: "一般",
 };
 
 const CLASS: Record<Priority, string> = {

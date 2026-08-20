@@ -9,9 +9,9 @@ import { SubmitButton } from "@/components/submit-button";
 import { FormMessage } from "@/components/form-message";
 
 const PRIORITY_LABEL: Record<Priority, string> = {
-  MUST: "必須",
-  SHOULD: "應該",
-  COULD: "可以",
+  MUST: "急",
+  SHOULD: "中",
+  COULD: "一般",
 };
 
 export function NewTaskForm({ resultId }: { resultId: string }) {

@@ -123,7 +123,7 @@ export function TaskItem({
               <Select name="priority" defaultValue={task.priority}>
                 {(["MUST", "SHOULD", "COULD"] as Priority[]).map((p) => (
                   <option key={p} value={p}>
-                    {{ MUST: "必須", SHOULD: "應該", COULD: "可以" }[p]}
+                    {{ MUST: "急", SHOULD: "中", COULD: "一般" }[p]}
                   </option>
                 ))}
               </Select>
