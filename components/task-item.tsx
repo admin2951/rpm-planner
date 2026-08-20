@@ -81,6 +81,14 @@ export function TaskItem({
           )}
         </button>
 
+        <button
+          type="button"
+          onClick={() => setEditing((v) => !v)}
+          className="rounded px-1.5 py-1 text-xs text-sage-dark hover:underline"
+        >
+          編輯
+        </button>
+
         <form
           action={deleteTaskAction}
           onSubmit={(e) => {
