@@ -14,7 +14,15 @@ export default async function ResultDetailPage({
   const [result, allResults] = await Promise.all([
     prisma.result.findUnique({
       where: { id },
-      include: { tasks: { orderBy: [{ status: "asc" }, { order: "asc" }, { createdAt: "asc" }] } },
+      include: {
+        tasks: {
+          orderBy: [
+            { dueDate: { sort: "asc", nulls: "last" } },
+            { order: "asc" },
+            { createdAt: "asc" },
+          ],
+        },
+      },
     }),
     prisma.result.findMany({
       where: { status: { not: "ARCHIVED" } },
