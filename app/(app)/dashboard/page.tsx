@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           <h2 className="mb-2 text-sm font-semibold text-muted">需要處理</h2>
           <div className="space-y-2">
             {[...overdue, ...dueToday].map((t) => (
-              <TaskItem key={t.id} task={t} results={results2} showResult />
+              <TaskItem key={t.id} task={t} results={results2} />
             ))}
           </div>
         </div>

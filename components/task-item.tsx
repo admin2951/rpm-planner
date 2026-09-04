@@ -16,15 +16,19 @@ import { formatShortDate, toDateKey } from "@/lib/date";
 
 type TaskWithResult = Task & { result?: { id: string; title: string } | null };
 
+const STATUS_LABEL: Record<TaskStatus, string> = {
+  TODO: "待辦",
+  DOING: "進行中",
+  DONE: "已完成",
+};
+
 export function TaskItem({
   task,
   results = [],
-  showResult = false,
   showMeta = false,
 }: {
   task: TaskWithResult;
   results?: { id: string; title: string }[];
-  showResult?: boolean;
   showMeta?: boolean;
 }) {
   const [editing, setEditing] = useState(false);
@@ -68,9 +72,10 @@ export function TaskItem({
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted">
             <PriorityBadge priority={task.priority} />
+            <span>狀態：{STATUS_LABEL[task.status]}</span>
             {task.dueDate && <span>截止 {formatShortDate(task.dueDate)}</span>}
             {showMeta && <span>建立於 {formatShortDate(task.createdAt)}</span>}
-            {showResult && task.result && (
+            {task.result && (
               <span className="rounded-full bg-gray-100 text-gray-500 px-2 py-0.5">
                 R：{task.result.title}
               </span>

@@ -75,7 +75,7 @@ export default async function TodayPage({
         <div className="space-y-2">
           {dueTasks.length === 0 && <p className="text-sm text-muted">這天沒有到期的項目。</p>}
           {dueTasks.map((t) => (
-            <TaskItem key={t.id} task={t} results={results} showResult />
+            <TaskItem key={t.id} task={t} results={results} />
           ))}
         </div>
       </div>
@@ -87,7 +87,7 @@ export default async function TodayPage({
             <p className="text-sm text-muted">這天還沒有完成的項目。</p>
           )}
           {completedTasks.map((t) => (
-            <TaskItem key={t.id} task={t} results={results} showResult />
+            <TaskItem key={t.id} task={t} results={results} />
           ))}
         </div>
       </div>
