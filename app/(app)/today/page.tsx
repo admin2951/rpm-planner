@@ -24,12 +24,18 @@ export default async function TodayPage({
     prisma.task.findMany({
       where: { dueDate: { gte: from, lte: to }, status: { not: "DONE" } },
       orderBy: [{ priority: "asc" }, { createdAt: "asc" }],
-      include: { result: { select: { id: true, title: true } } },
+      include: {
+        result: { select: { id: true, title: true } },
+        deliverables: { orderBy: { order: "asc" } },
+      },
     }),
     prisma.task.findMany({
       where: { completedAt: { gte: from, lte: to } },
       orderBy: { completedAt: "desc" },
-      include: { result: { select: { id: true, title: true } } },
+      include: {
+        result: { select: { id: true, title: true } },
+        deliverables: { orderBy: { order: "asc" } },
+      },
     }),
     prisma.dailyNote.findUnique({ where: { date: from } }),
     prisma.result.findMany({

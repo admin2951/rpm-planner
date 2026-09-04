@@ -21,6 +21,7 @@ export default async function ResultDetailPage({
             { order: "asc" },
             { createdAt: "asc" },
           ],
+          include: { deliverables: { orderBy: { order: "asc" } } },
         },
       },
     }),

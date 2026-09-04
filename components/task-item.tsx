@@ -12,9 +12,13 @@ import { FormRow, TextInput, TextArea, Select } from "@/components/form";
 import { SubmitButton } from "@/components/submit-button";
 import { FormMessage } from "@/components/form-message";
 import { PriorityBadge } from "@/components/priority-badge";
+import { DeliverableList } from "@/components/deliverable-list";
 import { formatShortDate, toDateKey } from "@/lib/date";
 
-type TaskWithResult = Task & { result?: { id: string; title: string } | null };
+type TaskWithResult = Task & {
+  result?: { id: string; title: string } | null;
+  deliverables?: { id: string; title: string; done: boolean }[];
+};
 
 const STATUS_LABEL: Record<TaskStatus, string> = {
   TODO: "待辦",
@@ -108,6 +112,11 @@ export function TaskItem({
             刪除
           </button>
         </form>
+      </div>
+
+      <div className="pl-11 pr-3.5 pb-3">
+        <p className="mb-1 text-xs font-medium text-muted">交付物</p>
+        <DeliverableList taskId={task.id} deliverables={task.deliverables ?? []} />
       </div>
 
       {editing && (

@@ -14,7 +14,10 @@ export default async function DashboardPage() {
     prisma.task.findMany({
       where: { dueDate: { lte: to }, status: { not: "DONE" } },
       orderBy: [{ dueDate: "asc" }, { priority: "asc" }],
-      include: { result: { select: { id: true, title: true } } },
+      include: {
+        result: { select: { id: true, title: true } },
+        deliverables: { orderBy: { order: "asc" } },
+      },
       take: 10,
     }),
     prisma.task.count({ where: { resultId: null, status: { not: "DONE" } } }),

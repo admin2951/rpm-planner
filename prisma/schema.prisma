@@ -79,6 +79,23 @@ model Task {
   @@index([resultId])
   @@index([status])
   @@index([dueDate])
+
+  deliverables Deliverable[]
+}
+
+// ── 交付物：某個行動項目底下要交出來的具體東西，各自可打勾完成 ───
+model Deliverable {
+  id     String @id @default(cuid())
+  taskId String
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  title String
+  done  Boolean @default(false)
+  order Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
 }
 
 // ── 每日反思／心得（一天一筆自由文字）─────────────────────
