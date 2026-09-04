@@ -74,7 +74,7 @@ export function DeliverableList({
         </span>
         <input
           name="title"
-          placeholder="新增交付物，按 Enter 送出…"
+          placeholder="新增交付物…"
           autoComplete="off"
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -82,8 +82,21 @@ export function DeliverableList({
               e.currentTarget.form?.requestSubmit();
             }
           }}
+          // 打完字直接點別的地方（例如任務的「儲存」）時也會存起來，避免輸入的內容被丟掉。
+          // 點「新增」鈕時交給按鈕自己送出，不然會送出兩次。
+          onBlur={(e) => {
+            const next = e.relatedTarget as HTMLElement | null;
+            if (next?.getAttribute("type") === "submit") return;
+            if (e.currentTarget.value.trim()) e.currentTarget.form?.requestSubmit();
+          }}
           className="flex-1 border-0 bg-transparent py-0.5 text-xs text-ink outline-none placeholder:text-muted/60"
         />
+        <button
+          type="submit"
+          className="shrink-0 rounded border border-clay px-2 py-0.5 text-xs text-sage-dark hover:bg-sand"
+        >
+          新增
+        </button>
       </form>
     </div>
   );
