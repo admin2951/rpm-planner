@@ -45,6 +45,27 @@ export async function toggleDeliverableAction(formData: FormData) {
   await revalidateForTask(row.taskId);
 }
 
+/** 逐格自動儲存：交付物的內容／連結／備註 */
+export async function updateDeliverableAction(formData: FormData) {
+  await requireUser();
+  const id = String(formData.get("id") || "");
+  if (!id) return;
+
+  const row = await prisma.deliverable.findUnique({ where: { id } });
+  if (!row) return;
+
+  const title = String(formData.get("title") ?? row.title).trim() || row.title;
+  const url = String(formData.get("url") ?? row.url ?? "").trim() || null;
+  const note = String(formData.get("note") ?? row.note ?? "").trim() || null;
+
+  await prisma.deliverable.update({
+    where: { id },
+    data: { title, url, note },
+  });
+
+  await revalidateForTask(row.taskId);
+}
+
 export async function deleteDeliverableAction(formData: FormData) {
   await requireUser();
   const id = String(formData.get("id") || "");

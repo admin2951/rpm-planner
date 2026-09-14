@@ -17,7 +17,13 @@ import { formatShortDate, toDateKey } from "@/lib/date";
 
 type TaskWithResult = Task & {
   result?: { id: string; title: string } | null;
-  deliverables?: { id: string; title: string; done: boolean }[];
+  deliverables?: {
+    id: string;
+    title: string;
+    url: string | null;
+    note: string | null;
+    done: boolean;
+  }[];
 };
 
 const STATUS_LABEL: Record<TaskStatus, string> = {

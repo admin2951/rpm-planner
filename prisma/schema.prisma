@@ -90,6 +90,8 @@ model Deliverable {
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   title String
+  url   String? // 交付物的連結（例如雲端檔案位置）
+  note  String? // 備註
   done  Boolean @default(false)
   order Int     @default(0)
 
