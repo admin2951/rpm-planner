@@ -18,7 +18,16 @@ export default async function TasksPage({
   const weekKey = week || currentWeekKey();
   const { from, to } = weekRange(weekKey);
 
-  const [weekTasks, unscheduled] = await Promise.all([
+  const [overdue, weekTasks, unscheduled] = await Promise.all([
+    // 這一週之前還沒完成的：一週一週翻的時候才不會把前面漏掉的事情埋在後面
+    prisma.task.findMany({
+      where: {
+        resultId: null,
+        status: { not: "DONE" },
+        dueDate: { lt: from },
+      },
+      orderBy: [{ dueDate: "asc" }, { order: "asc" }, { createdAt: "asc" }],
+    }),
     prisma.task.findMany({
       where: { resultId: null, dueDate: { gte: from, lte: to } },
       orderBy: [{ dueDate: "asc" }, { order: "asc" }, { createdAt: "asc" }],
@@ -39,6 +48,18 @@ export default async function TasksPage({
       </div>
 
       <QuickCapture placeholder="隨手記下任何想法或代辦（之後可再設定截止日）…" />
+
+      {overdue.length > 0 && (
+        <div>
+          <h2 className="mb-2 text-sm font-semibold text-red-600">
+            逾期未完成（{overdue.length}）
+          </h2>
+          <p className="mb-2 text-xs text-muted">
+            這一週之前還沒完成的事情，改好截止日就會回到對應的那一週。
+          </p>
+          <TaskTable tasks={overdue} />
+        </div>
+      )}
 
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold text-muted">{formatWeekLabel(weekKey)}</h2>
