@@ -11,15 +11,27 @@ const STATUS_LABEL: Record<TaskStatus, string> = {
 };
 
 const GRID_COLS = "grid-cols-[28px_40px_1fr_100px_90px_140px_1fr_44px]";
+// 篩選檢視會多一欄「所屬 RPM」，才看得出這筆是哪個成果底下的行動
+const GRID_COLS_WITH_RESULT =
+  "grid-cols-[28px_40px_1fr_100px_90px_140px_1fr_140px_44px]";
+
+type TaskWithResult = Task & { result?: { id: string; title: string } | null };
 
 function submitOnEvent(e: React.SyntheticEvent<HTMLInputElement | HTMLSelectElement>) {
   e.currentTarget.form?.requestSubmit();
 }
 
-export function TaskTable({ tasks }: { tasks: Task[] }) {
+export function TaskTable({
+  tasks,
+  showResult = false,
+}: {
+  tasks: TaskWithResult[];
+  showResult?: boolean;
+}) {
+  const cols = showResult ? GRID_COLS_WITH_RESULT : GRID_COLS;
   return (
     <div className="overflow-x-auto rounded-lg border border-clay bg-white">
-      <div className={`grid ${GRID_COLS} gap-x-2 border-b border-clay/60 bg-sand/60 px-3 py-2 text-xs font-semibold text-muted`}>
+      <div className={`grid ${cols} gap-x-2 border-b border-clay/60 bg-sand/60 px-3 py-2 text-xs font-semibold text-muted`}>
         <div />
         <div>順序</div>
         <div>任務</div>
@@ -27,6 +39,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
         <div>建立日期</div>
         <div>截止日</div>
         <div>備註</div>
+        {showResult && <div>所屬 RPM</div>}
         <div />
       </div>
 
@@ -42,7 +55,7 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
         >
           <input type="hidden" name="id" value={t.id} />
           <div
-            className={`grid ${GRID_COLS} col-span-full items-center gap-x-2 border-b border-clay/40 px-3 py-1.5 last:border-b-0`}
+            className={`grid ${cols} col-span-full items-center gap-x-2 border-b border-clay/40 px-3 py-1.5 last:border-b-0`}
           >
             <button
               type="submit"
@@ -94,6 +107,11 @@ export function TaskTable({ tasks }: { tasks: Task[] }) {
               onBlur={submitOnEvent}
               className="min-w-0 rounded border-0 bg-transparent px-1 py-1 text-xs text-muted outline-none placeholder:text-muted/60 focus:bg-sand/60"
             />
+            {showResult && (
+              <span className="truncate text-xs text-muted" title={t.result?.title ?? ""}>
+                {t.result ? t.result.title : "—"}
+              </span>
+            )}
             <button
               type="submit"
               formAction={deleteTaskAction}

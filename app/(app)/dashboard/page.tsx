@@ -10,7 +10,15 @@ export default async function DashboardPage() {
   const from = startOfDay(dateKey);
   const to = endOfDay(dateKey);
 
-  const [overdueAndToday, inboxCount, results, results2, deadlineCandidates] = await Promise.all([
+  const [
+    overdueAndToday,
+    unfinishedCount,
+    overdueCount,
+    dueTodayCount,
+    results,
+    results2,
+    deadlineCandidates,
+  ] = await Promise.all([
     prisma.task.findMany({
       where: { dueDate: { lte: to }, status: { not: "DONE" } },
       orderBy: [{ dueDate: "asc" }, { priority: "asc" }],
@@ -20,7 +28,14 @@ export default async function DashboardPage() {
       },
       take: 10,
     }),
-    prisma.task.count({ where: { resultId: null, status: { not: "DONE" } } }),
+    // 這三個數字要跟 /tasks 的篩選結果一致，所以用 count 而不是上面那份取 10 筆的清單
+    prisma.task.count({ where: { status: { not: "DONE" } } }),
+    prisma.task.count({
+      where: { status: { not: "DONE" }, dueDate: { lt: from } },
+    }),
+    prisma.task.count({
+      where: { status: { not: "DONE" }, dueDate: { gte: from, lte: to } },
+    }),
     prisma.result.findMany({
       where: { status: "ACTIVE" },
       orderBy: { updatedAt: "desc" },
@@ -62,21 +77,21 @@ export default async function DashboardPage() {
           href="/tasks?view=todo"
           className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
         >
-          <p className="text-2xl font-semibold text-sage-dark">{inboxCount}</p>
-          <p className="mt-1 text-sm text-muted">未完成的待辦事項</p>
+          <p className="text-2xl font-semibold text-sage-dark">{unfinishedCount}</p>
+          <p className="mt-1 text-sm text-muted">未完成</p>
         </Link>
         <Link
           href="/tasks?view=overdue"
           className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
         >
-          <p className="text-2xl font-semibold text-red-600">{overdue.length}</p>
+          <p className="text-2xl font-semibold text-red-600">{overdueCount}</p>
           <p className="mt-1 text-sm text-muted">已過期</p>
         </Link>
         <Link
           href="/today"
           className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
         >
-          <p className="text-2xl font-semibold text-sage-dark">{dueToday.length}</p>
+          <p className="text-2xl font-semibold text-sage-dark">{dueTodayCount}</p>
           <p className="mt-1 text-sm text-muted">今天到期</p>
         </Link>
       </div>

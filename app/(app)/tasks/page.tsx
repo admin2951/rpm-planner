@@ -25,13 +25,17 @@ const VIEWS = [
 
 type ViewKey = (typeof VIEWS)[number]["key"];
 
+/**
+ * 篩選時「不分週次，也包含 RPM 底下的行動項目」——
+ * 總覽上的數字就是這些，點進來才不會對不起來。
+ */
 function filterFor(view: Exclude<ViewKey, "week">): Prisma.TaskWhereInput {
   const today = startOfDay(todayKey());
-  if (view === "doing") return { resultId: null, status: "DOING" };
+  if (view === "doing") return { status: "DOING" };
   if (view === "overdue") {
-    return { resultId: null, status: { not: "DONE" }, dueDate: { lt: today } };
+    return { status: { not: "DONE" }, dueDate: { lt: today } };
   }
-  return { resultId: null, status: { not: "DONE" } };
+  return { status: { not: "DONE" } };
 }
 
 export default async function TasksPage({
@@ -52,6 +56,7 @@ export default async function TasksPage({
       ? []
       : await prisma.task.findMany({
           where: filterFor(view),
+          include: { result: { select: { id: true, title: true } } },
           orderBy: [
             { dueDate: { sort: "asc", nulls: "last" } },
             { order: "asc" },
@@ -122,8 +127,10 @@ export default async function TasksPage({
           >
             {activeLabel}（{filtered.length}）
           </h2>
-          <p className="mb-2 text-xs text-muted">不分週次，全部列出來。</p>
-          <TaskTable tasks={filtered} />
+          <p className="mb-2 text-xs text-muted">
+            不分週次，也包含 RPM 底下的行動項目，全部列出來。
+          </p>
+          <TaskTable tasks={filtered} showResult />
         </div>
       ) : (
         <>
