@@ -59,16 +59,19 @@ export default async function DashboardPage() {
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Link
-          href="/tasks"
+          href="/tasks?view=todo"
           className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
         >
           <p className="text-2xl font-semibold text-sage-dark">{inboxCount}</p>
           <p className="mt-1 text-sm text-muted">未完成的待辦事項</p>
         </Link>
-        <div className="rounded-lg border border-clay bg-white p-4">
+        <Link
+          href="/tasks?view=overdue"
+          className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
+        >
           <p className="text-2xl font-semibold text-red-600">{overdue.length}</p>
           <p className="mt-1 text-sm text-muted">已過期</p>
-        </div>
+        </Link>
         <Link
           href="/today"
           className="rounded-lg border border-clay bg-white p-4 hover:border-sage-dark/50"
