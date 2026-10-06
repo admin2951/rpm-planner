@@ -1,184 +1,147 @@
-import Link from "next/link";
-import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { QuickCapture } from "@/components/quick-capture";
 import { TaskTable } from "@/components/task-table";
-import {
-  currentWeekKey,
-  shiftWeekKey,
-  weekRange,
-  formatWeekLabel,
-  startOfDay,
-  todayKey,
-} from "@/lib/date";
+import { currentWeekKey, shiftWeekKey, weekRange, formatWeekLabel } from "@/lib/date";
 
 /**
- * 依狀態篩選時會跨所有週次列出來，
- * 這樣總覽點進來就不會因為事情排在別週而看不到。
+ * 這一頁只放「平常的瑣事」——不含 RPM 底下的行動項目（那些在 RPM 頁看）。
+ * 分區直接對應三個問題：還有什麼沒做完 / 這週要做什麼 / 下週要做什麼。
  */
-const VIEWS = [
-  { key: "week", label: "依週次" },
-  { key: "todo", label: "未完成" },
-  { key: "doing", label: "進行中" },
-  { key: "overdue", label: "逾期" },
-] as const;
+export default async function TasksPage() {
+  const thisWeekKey = currentWeekKey();
+  const nextWeekKey = shiftWeekKey(thisWeekKey, 1);
+  const thisWeek = weekRange(thisWeekKey);
+  const nextWeek = weekRange(nextWeekKey);
 
-type ViewKey = (typeof VIEWS)[number]["key"];
+  const chore = { resultId: null } as const;
+  const open = { ...chore, status: { not: "DONE" } } as const;
+  const byDue = [
+    { dueDate: "asc" as const },
+    { order: "asc" as const },
+    { createdAt: "asc" as const },
+  ];
 
-/**
- * 篩選時「不分週次，也包含 RPM 底下的行動項目」——
- * 總覽上的數字就是這些，點進來才不會對不起來。
- */
-function filterFor(view: Exclude<ViewKey, "week">): Prisma.TaskWhereInput {
-  const today = startOfDay(todayKey());
-  if (view === "doing") return { status: "DOING" };
-  if (view === "overdue") {
-    return { status: { not: "DONE" }, dueDate: { lt: today } };
-  }
-  return { status: { not: "DONE" } };
-}
-
-export default async function TasksPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ week?: string; view?: string }>;
-}) {
-  const { week, view: viewRaw } = await searchParams;
-  const view: ViewKey = VIEWS.some((v) => v.key === viewRaw)
-    ? (viewRaw as ViewKey)
-    : "week";
-
-  const weekKey = week || currentWeekKey();
-  const { from, to } = weekRange(weekKey);
-
-  const filtered =
-    view === "week"
-      ? []
-      : await prisma.task.findMany({
-          where: filterFor(view),
-          include: { result: { select: { id: true, title: true } } },
-          orderBy: [
-            { dueDate: { sort: "asc", nulls: "last" } },
-            { order: "asc" },
-            { createdAt: "asc" },
-          ],
-        });
-
-  const [overdue, weekTasks, unscheduled] =
-    view === "week"
-      ? await Promise.all([
-          // 這一週之前還沒完成的：一週一週翻的時候才不會把前面漏掉的事情埋在後面
-          prisma.task.findMany({
-            where: {
-              resultId: null,
-              status: { not: "DONE" },
-              dueDate: { lt: from },
-            },
-            orderBy: [{ dueDate: "asc" }, { order: "asc" }, { createdAt: "asc" }],
-          }),
-          prisma.task.findMany({
-            where: { resultId: null, dueDate: { gte: from, lte: to } },
-            orderBy: [{ dueDate: "asc" }, { order: "asc" }, { createdAt: "asc" }],
-          }),
-          prisma.task.findMany({
-            where: { resultId: null, dueDate: null },
-            orderBy: [{ status: "asc" }, { createdAt: "desc" }],
-          }),
-        ])
-      : [[], [], []];
-
-  const activeLabel = VIEWS.find((v) => v.key === view)!.label;
+  const [overdue, thisWeekTasks, nextWeekTasks, later, unscheduled, recentlyDone] =
+    await Promise.all([
+      prisma.task.findMany({
+        where: { ...open, dueDate: { lt: thisWeek.from } },
+        orderBy: byDue,
+      }),
+      prisma.task.findMany({
+        where: { ...open, dueDate: { gte: thisWeek.from, lte: thisWeek.to } },
+        orderBy: byDue,
+      }),
+      prisma.task.findMany({
+        where: { ...open, dueDate: { gte: nextWeek.from, lte: nextWeek.to } },
+        orderBy: byDue,
+      }),
+      prisma.task.findMany({
+        where: { ...open, dueDate: { gt: nextWeek.to } },
+        orderBy: byDue,
+      }),
+      prisma.task.findMany({
+        where: { ...open, dueDate: null },
+        orderBy: [{ createdAt: "desc" }],
+      }),
+      prisma.task.findMany({
+        where: { ...chore, status: "DONE" },
+        orderBy: [{ completedAt: "desc" }],
+        take: 10,
+      }),
+    ]);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-semibold text-ink">待辦事項</h1>
         <p className="mt-1 text-sm text-muted">
-          平常瑣碎雜事的待辦事項，隨手改任何一格就會自動存檔。
+          平常的瑣事。改任何一格都會自動存檔；改截止日就會自動換到對應的區塊。
         </p>
       </div>
 
       <QuickCapture placeholder="隨手記下任何想法或代辦（之後可再設定截止日）…" />
 
-      <div className="flex flex-wrap gap-1.5 border-b border-clay/60 pb-3">
-        {VIEWS.map((v) => (
-          <Link
-            key={v.key}
-            href={v.key === "week" ? "/tasks" : `/tasks?view=${v.key}`}
-            className={
-              "rounded-full px-3 py-1.5 text-sm transition " +
-              (view === v.key
-                ? "bg-gold font-semibold text-forest"
-                : "text-muted hover:bg-sand")
-            }
-          >
-            {v.label}
-          </Link>
-        ))}
+      <Section
+        title="還沒做完"
+        count={overdue.length}
+        hint="截止日已經過了，還沒打勾完成"
+        tone="danger"
+        tasks={overdue}
+      />
+
+      <Section
+        title="這週"
+        subtitle={formatWeekLabel(thisWeekKey)}
+        count={thisWeekTasks.length}
+        tasks={thisWeekTasks}
+        emptyHint="這週沒有排定的事情。"
+      />
+
+      <Section
+        title="下週"
+        subtitle={formatWeekLabel(nextWeekKey)}
+        count={nextWeekTasks.length}
+        tasks={nextWeekTasks}
+        emptyHint="下週還沒有排定的事情。"
+      />
+
+      {later.length > 0 && (
+        <Section title="更之後" count={later.length} tasks={later} />
+      )}
+
+      <Section
+        title="未排定日期"
+        count={unscheduled.length}
+        hint="還沒決定什麼時候做"
+        tasks={unscheduled}
+      />
+
+      {recentlyDone.length > 0 && (
+        <Section title="最近完成" count={recentlyDone.length} tasks={recentlyDone} />
+      )}
+    </div>
+  );
+}
+
+function Section({
+  title,
+  subtitle,
+  hint,
+  count,
+  tasks,
+  tone,
+  emptyHint,
+}: {
+  title: string;
+  subtitle?: string;
+  hint?: string;
+  count: number;
+  tasks: Parameters<typeof TaskTable>[0]["tasks"];
+  tone?: "danger";
+  emptyHint?: string;
+}) {
+  if (count === 0 && !emptyHint) return null;
+
+  return (
+    <div>
+      <div className="mb-1 flex items-baseline gap-2">
+        <h2
+          className={
+            "text-sm font-semibold " +
+            (tone === "danger" ? "text-red-600" : "text-ink")
+          }
+        >
+          {title}（{count}）
+        </h2>
+        {subtitle && <span className="text-xs text-muted">{subtitle}</span>}
       </div>
-
-      {view !== "week" ? (
-        <div>
-          <h2
-            className={
-              "mb-2 text-sm font-semibold " +
-              (view === "overdue" ? "text-red-600" : "text-muted")
-            }
-          >
-            {activeLabel}（{filtered.length}）
-          </h2>
-          <p className="mb-2 text-xs text-muted">
-            不分週次，也包含 RPM 底下的行動項目，全部列出來。
-          </p>
-          <TaskTable tasks={filtered} showResult />
-        </div>
+      {hint && <p className="mb-2 text-xs text-muted">{hint}</p>}
+      {count === 0 ? (
+        <p className="rounded-lg border border-clay bg-white px-3 py-4 text-sm text-muted">
+          {emptyHint}
+        </p>
       ) : (
-        <>
-          {overdue.length > 0 && (
-            <div>
-              <h2 className="mb-2 text-sm font-semibold text-red-600">
-                逾期未完成（{overdue.length}）
-              </h2>
-              <p className="mb-2 text-xs text-muted">
-                這一週之前還沒完成的事情，改好截止日就會回到對應的那一週。
-              </p>
-              <TaskTable tasks={overdue} />
-            </div>
-          )}
-
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-muted">{formatWeekLabel(weekKey)}</h2>
-            <div className="flex items-center gap-2 text-sm">
-              <Link
-                href={`/tasks?week=${shiftWeekKey(weekKey, -1)}`}
-                className="rounded-lg border border-clay px-3 py-1.5 text-ink hover:bg-sand"
-              >
-                ← 上週
-              </Link>
-              {weekKey !== currentWeekKey() && (
-                <Link
-                  href="/tasks"
-                  className="rounded-lg border border-clay px-3 py-1.5 text-ink hover:bg-sand"
-                >
-                  回本週
-                </Link>
-              )}
-              <Link
-                href={`/tasks?week=${shiftWeekKey(weekKey, 1)}`}
-                className="rounded-lg border border-clay px-3 py-1.5 text-ink hover:bg-sand"
-              >
-                下週 →
-              </Link>
-            </div>
-          </div>
-
-          <TaskTable tasks={weekTasks} />
-
-          <div>
-            <h2 className="mb-2 text-sm font-semibold text-muted">未排定日期</h2>
-            <TaskTable tasks={unscheduled} />
-          </div>
-        </>
+        <TaskTable tasks={tasks} />
       )}
     </div>
   );

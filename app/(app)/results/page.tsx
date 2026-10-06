@@ -25,7 +25,16 @@ export default async function ResultsPage({
     prisma.result.findMany({
       where: activeTab === "ALL" ? {} : { status: activeTab as ResultStatus },
       orderBy: [{ order: "asc" }, { createdAt: "desc" }],
-      include: { tasks: { select: { id: true, status: true } } },
+      include: {
+        tasks: {
+          select: { id: true, status: true, title: true, dueDate: true },
+          orderBy: [
+            { dueDate: { sort: "asc", nulls: "last" } },
+            { order: "asc" },
+            { createdAt: "asc" },
+          ],
+        },
+      },
     }),
     prisma.result.findMany({
       where: { status: "ACTIVE", targetDate: { not: null } },
@@ -81,6 +90,8 @@ export default async function ResultsPage({
         {results.map((r) => {
           const done = r.tasks.filter((t) => t.status === "DONE").length;
           const total = r.tasks.length;
+          // tasks 已按「最早到期優先」排序，第一筆未完成的就是下一步
+          const next = r.tasks.find((t) => t.status !== "DONE");
           return (
             <ResultCard
               key={r.id}
@@ -92,6 +103,9 @@ export default async function ResultsPage({
                 targetDate: r.targetDate,
                 done,
                 total,
+                nextAction: next
+                  ? { title: next.title, dueDate: next.dueDate }
+                  : null,
               }}
             />
           );

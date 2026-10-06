@@ -21,8 +21,12 @@ export function ResultCard({
     targetDate: Date | null;
     done: number;
     total: number;
+    /** 下一步：底下最早到期、還沒完成的行動 */
+    nextAction: { title: string; dueDate: Date | null } | null;
   };
 }) {
+  const percent =
+    result.total > 0 ? Math.round((result.done / result.total) * 100) : 0;
   return (
     <div className="relative rounded-lg border border-clay bg-white p-4 transition hover:border-sage-dark/50 hover:shadow-sm">
       <Link
@@ -42,12 +46,46 @@ export function ResultCard({
         )}
         <div className="mt-3 flex items-center justify-between text-xs text-muted">
           <span>
-            M 行動 {result.done}/{result.total}
+            進度 {result.done}/{result.total}（{percent}%）
           </span>
           {result.targetDate && (
             <span className={daysUntil(result.targetDate) <= 0 ? "font-medium text-red-600" : ""}>
               {formatDeadline(result.targetDate)}
             </span>
+          )}
+        </div>
+
+        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-sand">
+          <div
+            className="h-full rounded-full bg-sage-dark transition-all"
+            style={{ width: `${percent}%` }}
+          />
+        </div>
+
+        <div className="mt-3 border-t border-clay/50 pt-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-muted">
+            下一步
+          </p>
+          {result.nextAction ? (
+            <p className="mt-0.5 truncate text-xs text-ink">
+              {result.nextAction.title}
+              {result.nextAction.dueDate && (
+                <span
+                  className={
+                    "ml-1 " +
+                    (daysUntil(result.nextAction.dueDate) <= 0
+                      ? "font-medium text-red-600"
+                      : "text-muted")
+                  }
+                >
+                  （{formatDeadline(result.nextAction.dueDate)}）
+                </span>
+              )}
+            </p>
+          ) : (
+            <p className="mt-0.5 text-xs text-muted">
+              {result.total === 0 ? "還沒有行動項目" : "都完成了"}
+            </p>
           )}
         </div>
       </div>
