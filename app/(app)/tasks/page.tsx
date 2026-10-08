@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { QuickCapture } from "@/components/quick-capture";
 import { TaskTable } from "@/components/task-table";
@@ -5,13 +6,16 @@ import { currentWeekKey, shiftWeekKey, weekRange, formatWeekLabel } from "@/lib/
 
 /**
  * 這一頁只放「平常的瑣事」——不含 RPM 底下的行動項目（那些在 RPM 頁看）。
- * 分區直接對應三個問題：還有什麼沒做完 / 這週要做什麼 / 下週要做什麼。
+ * 分區直接對應三個問題：還有什麼沒做完 / 這週要做什麼 / 下週要做什麼，
+ * 後面再接這週與上週的完成紀錄；更早的在 /tasks/history。
  */
 export default async function TasksPage() {
   const thisWeekKey = currentWeekKey();
   const nextWeekKey = shiftWeekKey(thisWeekKey, 1);
+  const lastWeekKey = shiftWeekKey(thisWeekKey, -1);
   const thisWeek = weekRange(thisWeekKey);
   const nextWeek = weekRange(nextWeekKey);
+  const lastWeek = weekRange(lastWeekKey);
 
   const chore = { resultId: null } as const;
   const open = { ...chore, status: { not: "DONE" } } as const;
@@ -21,7 +25,7 @@ export default async function TasksPage() {
     { createdAt: "asc" as const },
   ];
 
-  const [overdue, thisWeekTasks, nextWeekTasks, later, unscheduled, recentlyDone] =
+  const [overdue, thisWeekTasks, nextWeekTasks, later, unscheduled, doneRecent] =
     await Promise.all([
       prisma.task.findMany({
         where: { ...open, dueDate: { lt: thisWeek.from } },
@@ -43,12 +47,23 @@ export default async function TasksPage() {
         where: { ...open, dueDate: null },
         orderBy: [{ createdAt: "desc" }],
       }),
+      // 完成紀錄用「完成日」分組，不是截止日：上週到期、這週才做完的算這週
       prisma.task.findMany({
-        where: { ...chore, status: "DONE" },
+        where: {
+          ...chore,
+          status: "DONE",
+          completedAt: { gte: lastWeek.from, lte: thisWeek.to },
+        },
         orderBy: [{ completedAt: "desc" }],
-        take: 10,
       }),
     ]);
+
+  const doneThisWeek = doneRecent.filter(
+    (t) => t.completedAt && t.completedAt >= thisWeek.from
+  );
+  const doneLastWeek = doneRecent.filter(
+    (t) => t.completedAt && t.completedAt < thisWeek.from
+  );
 
   return (
     <div className="space-y-6">
@@ -67,6 +82,7 @@ export default async function TasksPage() {
         hint="截止日已經過了，還沒打勾完成"
         tone="danger"
         tasks={overdue}
+        emptyHint="都跟上了，沒有逾期的事情。"
       />
 
       <Section
@@ -94,11 +110,33 @@ export default async function TasksPage() {
         count={unscheduled.length}
         hint="還沒決定什麼時候做"
         tasks={unscheduled}
+        emptyHint="沒有待排定的事情。"
       />
 
-      {recentlyDone.length > 0 && (
-        <Section title="最近完成" count={recentlyDone.length} tasks={recentlyDone} />
-      )}
+      <Section
+        title="這週完成"
+        subtitle={formatWeekLabel(thisWeekKey)}
+        count={doneThisWeek.length}
+        tasks={doneThisWeek}
+        emptyHint="這週還沒完成任何事。"
+      />
+
+      <Section
+        title="上週完成"
+        subtitle={formatWeekLabel(lastWeekKey)}
+        count={doneLastWeek.length}
+        tasks={doneLastWeek}
+        emptyHint="上週沒有完成紀錄。"
+      />
+
+      <div>
+        <Link
+          href="/tasks/history"
+          className="text-sm text-sage-dark hover:underline"
+        >
+          看更早的完成紀錄 →
+        </Link>
+      </div>
     </div>
   );
 }
@@ -128,16 +166,16 @@ function Section({
         <h2
           className={
             "text-sm font-semibold " +
-            (tone === "danger" ? "text-red-600" : "text-ink")
+            (tone === "danger" && count > 0 ? "text-red-600" : "text-ink")
           }
         >
           {title}（{count}）
         </h2>
         {subtitle && <span className="text-xs text-muted">{subtitle}</span>}
       </div>
-      {hint && <p className="mb-2 text-xs text-muted">{hint}</p>}
+      {hint && count > 0 && <p className="mb-2 text-xs text-muted">{hint}</p>}
       {count === 0 ? (
-        <p className="rounded-lg border border-clay bg-white px-3 py-4 text-sm text-muted">
+        <p className="rounded-lg border border-clay bg-white px-3 py-3 text-sm text-muted">
           {emptyHint}
         </p>
       ) : (
