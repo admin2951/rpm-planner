@@ -155,7 +155,7 @@ export default async function WorkLogPage({
                     : "border-clay bg-white hover:bg-sand/60")
                 }
               >
-                <p className="text-[11px] text-muted">{k.slice(5)}</p>
+                <p className="text-[11px] text-muted">{k.slice(5).replace("-", "/")}</p>
                 <p
                   className={
                     "mt-0.5 text-sm " +
