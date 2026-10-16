@@ -94,7 +94,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-semibold text-ink">總覽</h1>
+        <h1 className="text-2xl font-medium text-ink">總覽</h1>
         <p className="mt-1 text-sm text-muted">
           還有什麼沒做完、這週要做什麼、下週要做什麼。
         </p>

@@ -8,8 +8,8 @@ const LABEL: Record<Priority, string> = {
 
 const CLASS: Record<Priority, string> = {
   MUST: "bg-red-50 text-red-700",
-  SHOULD: "bg-orange-50 text-orange-700",
-  COULD: "bg-gray-100 text-gray-500",
+  SHOULD: "bg-gold text-forest",
+  COULD: "bg-sand text-muted",
 };
 
 export function PriorityBadge({ priority }: { priority: Priority }) {

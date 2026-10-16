@@ -31,7 +31,7 @@ export function ResultEditForm({ result }: { result: Result }) {
               {STATUS_LABEL[result.status]}
             </span>
             <p className="mt-1 text-xs font-semibold text-sage-dark">R・成果</p>
-            <h1 className="text-xl font-semibold text-ink">{result.title}</h1>
+            <h1 className="text-2xl font-medium text-ink">{result.title}</h1>
           </div>
           <button
             type="button"

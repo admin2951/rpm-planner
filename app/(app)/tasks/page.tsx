@@ -68,7 +68,7 @@ export default async function TasksPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-ink">待辦事項</h1>
+        <h1 className="text-2xl font-medium text-ink">待辦事項</h1>
         <p className="mt-1 text-sm text-muted">
           平常的瑣事。改任何一格都會自動存檔；改截止日就會自動換到對應的區塊。
         </p>

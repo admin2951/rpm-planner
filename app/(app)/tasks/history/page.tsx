@@ -65,7 +65,7 @@ export default async function TaskHistoryPage({
     <div className="space-y-6">
       <div>
         <div className="flex items-baseline gap-3">
-          <h1 className="text-xl font-semibold text-ink">完成紀錄</h1>
+          <h1 className="text-2xl font-medium text-ink">完成紀錄</h1>
           <Link href="/tasks" className="text-sm text-sage-dark hover:underline">
             ← 回待辦事項
           </Link>

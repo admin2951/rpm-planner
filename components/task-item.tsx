@@ -86,7 +86,7 @@ export function TaskItem({
             <span>截止：{task.dueDate ? formatShortDate(task.dueDate) : "未設定"}</span>
             {showMeta && <span>建立於 {formatShortDate(task.createdAt)}</span>}
             {task.result && (
-              <span className="rounded-full bg-gray-100 text-gray-500 px-2 py-0.5">
+              <span className="rounded-full bg-sand text-muted px-2 py-0.5">
                 R：{task.result.title}
               </span>
             )}

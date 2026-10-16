@@ -37,7 +37,7 @@ export function ResultCard({
       <div className="pointer-events-none relative z-[1]">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-medium text-ink">{result.title}</p>
-          <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+          <span className="shrink-0 rounded-full bg-sand px-2 py-0.5 text-xs text-muted">
             {STATUS_LABEL[result.status]}
           </span>
         </div>

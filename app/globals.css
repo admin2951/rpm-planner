@@ -1,21 +1,27 @@
 @import "tailwindcss";
 
-/* 灰階中性底色，襯線字體，純色不加圖案 */
+/*
+ * 色彩與字體取自品牌提案的設計系統：
+ *   深青 #00585E（主色）／亮青 #26BABD（點綴）／黑白＋暖灰留白
+ * 調性：大面積留白、細線分隔、襯線標題配細體內文。
+ */
 @theme {
-  --color-cream: #f2f3f5;
-  --color-sand: #e7e9ec;
-  --color-clay: #d9dce1;
-  --color-sage: #b97452;
-  --color-sage-dark: #8a3a47;
-  --color-moss: #5b1e2c;
-  --color-gold: #e1ebdd;
-  --color-forest: #2f4a34;
-  --color-ink: #2b2a26;
-  --color-muted: #8a857b;
+  --color-cream: #f1efec; /* 頁面底色：暖灰留白 */
+  --color-sand: #e4e2de; /* 次層填色：表頭、hover */
+  --color-clay: #d4d2ce; /* 分隔線 */
+  --color-sage: #26babd; /* 亮青：點綴、圖示 */
+  --color-sage-dark: #00585e; /* 深青：主色、連結、按鈕 */
+  --color-moss: #003f44; /* 更深的青：hover、標題 */
+  --color-gold: #d5efef; /* 淡青底：選取狀態 */
+  --color-forest: #00484d; /* 淡青底上的字 */
+  --color-ink: #15201f; /* 主文字：帶青調的近黑 */
+  --color-muted: #66706f; /* 次要文字 */
 
-  --font-serif: "Noto Serif TC", "Songti TC", "PingFang TC", Georgia, serif;
-  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui,
-    sans-serif;
+  /* IvyJournal／MiSans 非開源，改用最接近的免費字體 */
+  --font-serif: "Instrument Serif", "Noto Serif TC", "Songti TC", "PingFang TC",
+    Georgia, serif;
+  --font-sans: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+    system-ui, sans-serif;
 }
 
 :root {
@@ -26,8 +32,18 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-serif);
+  /* 內文走細體無襯線，標題才用襯線 */
+  font-family: var(--font-sans);
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 頁面標題一律襯線，對應提案裡「襯線標題＋細字內文」的排版 */
+h1 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 ::-webkit-scrollbar {
@@ -37,4 +53,22 @@ body {
 ::-webkit-scrollbar-thumb {
   background: var(--color-clay);
   border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+::selection {
+  background: var(--color-gold);
+  color: var(--color-forest);
+}
+
+/* 表單元素聚焦時用品牌深青，而不是瀏覽器預設藍 */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-sage-dark);
+  outline-offset: 1px;
 }
