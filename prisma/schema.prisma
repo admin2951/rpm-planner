@@ -109,3 +109,20 @@ model DailyNote {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ── 工作時程紀錄：一天之內每個時段在做什麼（預設 09:30–21:30）────
+// startMin / endMin 皆為「從當天午夜起算的分鐘數」，例如 570 = 09:30。
+model WorkLog {
+  id   String   @id @default(cuid())
+  date DateTime // 當天的 00:00（本機時區）
+
+  startMin Int
+  endMin   Int
+  content  String // 這個時段在做什麼
+  note     String? // 備註
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([date])
+}

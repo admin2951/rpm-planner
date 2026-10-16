@@ -8,6 +8,7 @@ const NAV = [
   { href: "/dashboard", label: "總覽", icon: "◈" },
   { href: "/results", label: "RPM", icon: "✦" },
   { href: "/tasks", label: "待辦事項", icon: "☑" },
+  { href: "/log", label: "工作紀錄", icon: "◷" },
   { href: "/today", label: "今日", icon: "☀" },
 ];
 

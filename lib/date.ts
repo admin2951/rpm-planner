@@ -137,3 +137,47 @@ export function getDueBucket(dueDate: Date | null | undefined): DueBucket {
 
   return "LATER";
 }
+
+/* ── 工作時程紀錄用：以「從當天午夜起算的分鐘數」表示時間 ───────── */
+
+/** 預設的一天工作區間：09:30 – 21:30 */
+export const DAY_START_MIN = 9 * 60 + 30;
+export const DAY_END_MIN = 21 * 60 + 30;
+
+/** 570 → "09:30" */
+export function formatMinutes(min: number): string {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/** "09:30" → 570；格式不對回傳 null */
+export function parseMinutes(value: string | null | undefined): number | null {
+  if (!value) return null;
+  const m = /^(\d{1,2}):(\d{2})$/.exec(value.trim());
+  if (!m) return null;
+  const h = Number(m[1]);
+  const mm = Number(m[2]);
+  if (h > 23 || mm > 59) return null;
+  return h * 60 + mm;
+}
+
+/** 下拉選單用的時間選項（預設 06:00–23:30，每 30 分鐘一格） */
+export function timeOptions(
+  from = 6 * 60,
+  to = 23 * 60 + 30,
+  step = 30
+): string[] {
+  const out: string[] = [];
+  for (let m = from; m <= to; m += step) out.push(formatMinutes(m));
+  return out;
+}
+
+/** 把分鐘數換成「X 小時 Y 分」 */
+export function formatDuration(min: number): string {
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (h === 0) return `${m} 分`;
+  if (m === 0) return `${h} 小時`;
+  return `${h} 小時 ${m} 分`;
+}
