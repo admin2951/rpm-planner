@@ -7,7 +7,8 @@ import {
 } from "@/app/actions/work-logs";
 import { formatMinutes, formatDuration, TIME_STEP_MIN } from "@/lib/date";
 
-const COLS = "grid-cols-[104px_14px_104px_1fr_minmax(0,14rem)_84px_40px]";
+const COLS =
+  "grid-cols-[132px_14px_132px_1fr_minmax(0,10rem)_84px_40px]";
 
 function submitOnEvent(e: React.SyntheticEvent<HTMLInputElement>) {
   e.currentTarget.form?.requestSubmit();
@@ -19,6 +20,8 @@ const cellClass =
 export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
   return (
     <div className="overflow-x-auto rounded-lg border border-clay bg-white">
+      {/* 視窗變窄時改成橫向捲動，而不是把文字欄壓到看不見 */}
+      <div className="min-w-[48rem]">
       <div
         className={`grid ${COLS} items-center gap-x-2 border-b border-clay/60 bg-sand/60 px-3 py-2 text-xs font-medium text-muted`}
       >
@@ -41,6 +44,7 @@ export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
 
           <input
             type="time"
+            lang="en-GB"
             name="start"
             step={TIME_STEP_MIN * 60}
             defaultValue={formatMinutes(row.startMin)}
@@ -50,6 +54,7 @@ export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
           <span className="text-center text-xs text-muted">–</span>
           <input
             type="time"
+            lang="en-GB"
             name="end"
             step={TIME_STEP_MIN * 60}
             defaultValue={formatMinutes(row.endMin)}
@@ -89,6 +94,7 @@ export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
           </button>
         </form>
       ))}
+      </div>
     </div>
   );
 }

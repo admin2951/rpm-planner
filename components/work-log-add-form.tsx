@@ -30,6 +30,7 @@ export function WorkLogAddForm({
         <span className="text-xs text-muted">開始</span>
         <input
           type="time"
+          lang="en-GB"
           name="start"
           step={TIME_STEP_MIN * 60}
           defaultValue={start}
@@ -41,6 +42,7 @@ export function WorkLogAddForm({
         <span className="text-xs text-muted">結束</span>
         <input
           type="time"
+          lang="en-GB"
           name="end"
           step={TIME_STEP_MIN * 60}
           defaultValue={end}
