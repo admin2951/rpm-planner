@@ -5,14 +5,11 @@ import {
   updateWorkLogAction,
   deleteWorkLogAction,
 } from "@/app/actions/work-logs";
-import { formatMinutes, formatDuration, timeOptions } from "@/lib/date";
+import { formatMinutes, formatDuration, TIME_STEP_MIN } from "@/lib/date";
 
-const COLS = "grid-cols-[86px_14px_86px_1fr_minmax(0,14rem)_76px_40px]";
-const OPTIONS = timeOptions();
+const COLS = "grid-cols-[104px_14px_104px_1fr_minmax(0,14rem)_84px_40px]";
 
-function submitOnEvent(
-  e: React.SyntheticEvent<HTMLInputElement | HTMLSelectElement>
-) {
+function submitOnEvent(e: React.SyntheticEvent<HTMLInputElement>) {
   e.currentTarget.form?.requestSubmit();
 }
 
@@ -42,31 +39,23 @@ export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
         >
           <input type="hidden" name="id" value={row.id} />
 
-          <select
+          <input
+            type="time"
             name="start"
+            step={TIME_STEP_MIN * 60}
             defaultValue={formatMinutes(row.startMin)}
-            onChange={submitOnEvent}
-            className={cellClass + " cursor-pointer"}
-          >
-            {withValue(OPTIONS, formatMinutes(row.startMin)).map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+            onBlur={submitOnEvent}
+            className={cellClass}
+          />
           <span className="text-center text-xs text-muted">–</span>
-          <select
+          <input
+            type="time"
             name="end"
+            step={TIME_STEP_MIN * 60}
             defaultValue={formatMinutes(row.endMin)}
-            onChange={submitOnEvent}
-            className={cellClass + " cursor-pointer"}
-          >
-            {withValue(OPTIONS, formatMinutes(row.endMin)).map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
+            onBlur={submitOnEvent}
+            className={cellClass}
+          />
 
           <input
             name="content"
@@ -102,10 +91,4 @@ export function WorkLogTable({ rows }: { rows: WorkLog[] }) {
       ))}
     </div>
   );
-}
-
-/** 既有紀錄若不是整點或半點（例如手動改過），也要出現在選單裡 */
-function withValue(options: string[], value: string): string[] {
-  if (options.includes(value)) return options;
-  return [...options, value].sort();
 }

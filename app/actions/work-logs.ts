@@ -3,18 +3,24 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/auth";
-import { startOfDay, parseMinutes, DAY_START_MIN } from "@/lib/date";
+import {
+  dateKeyToUtcDay,
+  parseMinutes,
+  DAY_START_MIN,
+  TIME_STEP_MIN,
+} from "@/lib/date";
 
 function revalidateLog() {
   revalidatePath("/log");
   revalidatePath("/today");
 }
 
-/** 讀出表單裡的起訖時間；結束時間若早於或等於開始時間，就往後補 30 分鐘 */
+/** 讀出表單裡的起訖時間；結束時間若早於或等於開始時間，就往後補一個最小刻度 */
 function readRange(formData: FormData, fallbackStart: number) {
   const start = parseMinutes(String(formData.get("start") || "")) ?? fallbackStart;
   const parsedEnd = parseMinutes(String(formData.get("end") || ""));
-  const end = parsedEnd !== null && parsedEnd > start ? parsedEnd : start + 30;
+  const end =
+    parsedEnd !== null && parsedEnd > start ? parsedEnd : start + TIME_STEP_MIN;
   return { start, end: Math.min(end, 24 * 60) };
 }
 
@@ -29,7 +35,7 @@ export async function createWorkLogAction(formData: FormData) {
 
   await prisma.workLog.create({
     data: {
-      date: startOfDay(dateKey),
+      date: dateKeyToUtcDay(dateKey),
       startMin: start,
       endMin: end,
       content,
@@ -79,14 +85,14 @@ export async function copyWorkLogsAction(formData: FormData) {
   if (!fromKey || !toKey) return;
 
   const source = await prisma.workLog.findMany({
-    where: { date: startOfDay(fromKey) },
+    where: { date: dateKeyToUtcDay(fromKey) },
     orderBy: { startMin: "asc" },
   });
   if (source.length === 0) return;
 
   await prisma.workLog.createMany({
     data: source.map((r) => ({
-      date: startOfDay(toKey),
+      date: dateKeyToUtcDay(toKey),
       startMin: r.startMin,
       endMin: r.endMin,
       content: r.content,

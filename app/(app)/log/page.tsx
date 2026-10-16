@@ -6,7 +6,8 @@ import { WorkLogTimeline } from "@/components/work-log-timeline";
 import { copyWorkLogsAction } from "@/app/actions/work-logs";
 import {
   todayKey,
-  startOfDay,
+  dateKeyToUtcDay,
+  utcDayToKey,
   shiftDateKey,
   formatDateLabel,
   formatMinutes,
@@ -30,12 +31,12 @@ export default async function WorkLogPage({
 
   const [rows, prevCount, recent] = await Promise.all([
     prisma.workLog.findMany({
-      where: { date: startOfDay(dateKey) },
+      where: { date: dateKeyToUtcDay(dateKey) },
       orderBy: [{ startMin: "asc" }, { createdAt: "asc" }],
     }),
-    prisma.workLog.count({ where: { date: startOfDay(prevKey) } }),
+    prisma.workLog.count({ where: { date: dateKeyToUtcDay(prevKey) } }),
     prisma.workLog.findMany({
-      where: { date: { gte: startOfDay(shiftDateKey(dateKey, -6)) } },
+      where: { date: { gte: dateKeyToUtcDay(shiftDateKey(dateKey, -6)) } },
       select: { date: true, startMin: true, endMin: true },
     }),
   ]);
@@ -54,7 +55,7 @@ export default async function WorkLogPage({
   // 最近 7 天各自記了多久
   const perDay = new Map<string, number>();
   for (const r of recent) {
-    const key = toKey(r.date);
+    const key = utcDayToKey(r.date);
     perDay.set(key, (perDay.get(key) ?? 0) + Math.max(r.endMin - r.startMin, 0));
   }
   const week = Array.from({ length: 7 }, (_, i) => shiftDateKey(dateKey, -6 + i));
@@ -189,10 +190,4 @@ function findGaps(
   }
   if (cursor < to) gaps.push({ from: cursor, to });
   return gaps.filter((g) => g.to > g.from);
-}
-
-function toKey(d: Date): string {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
 }

@@ -140,6 +140,9 @@ export function getDueBucket(dueDate: Date | null | undefined): DueBucket {
 
 /* ── 工作時程紀錄用：以「從當天午夜起算的分鐘數」表示時間 ───────── */
 
+/** 時間最小刻度（分鐘）：事情常常 5、10 分鐘就做完 */
+export const TIME_STEP_MIN = 5;
+
 /** 預設的一天工作區間：09:30 – 21:30 */
 export const DAY_START_MIN = 9 * 60 + 30;
 export const DAY_END_MIN = 21 * 60 + 30;
@@ -162,11 +165,11 @@ export function parseMinutes(value: string | null | undefined): number | null {
   return h * 60 + mm;
 }
 
-/** 下拉選單用的時間選項（預設 06:00–23:30，每 30 分鐘一格） */
+/** 時間選項（預設 06:00–23:55，每 5 分鐘一格） */
 export function timeOptions(
   from = 6 * 60,
-  to = 23 * 60 + 30,
-  step = 30
+  to = 23 * 60 + 55,
+  step = TIME_STEP_MIN
 ): string[] {
   const out: string[] = [];
   for (let m = from; m <= to; m += step) out.push(formatMinutes(m));
@@ -180,4 +183,20 @@ export function formatDuration(min: number): string {
   if (h === 0) return `${m} 分`;
   if (m === 0) return `${h} 小時`;
   return `${h} 小時 ${m} 分`;
+}
+
+/**
+ * 工作紀錄的「哪一天」用 UTC 午夜存，查詢時也用同一個值，
+ * 這樣不管伺服器在哪個時區（Vercel 是 UTC、本機是 +8）都指向同一天。
+ */
+export function dateKeyToUtcDay(dateKey: string): Date {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d));
+}
+
+/** UTC 午夜的 Date → "YYYY-MM-DD" */
+export function utcDayToKey(d: Date): string {
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}-${String(
+    d.getUTCDate()
+  ).padStart(2, "0")}`;
 }

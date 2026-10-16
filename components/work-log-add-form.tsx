@@ -2,9 +2,7 @@
 
 import { createWorkLogAction } from "@/app/actions/work-logs";
 import { SubmitButton } from "@/components/submit-button";
-import { formatMinutes, timeOptions } from "@/lib/date";
-
-const OPTIONS = timeOptions();
+import { formatMinutes, TIME_STEP_MIN } from "@/lib/date";
 
 /**
  * 新增一筆時段紀錄。開始時間預設接在前一筆結束的地方，
@@ -18,7 +16,7 @@ export function WorkLogAddForm({
   suggestedStart: number;
 }) {
   const start = formatMinutes(suggestedStart);
-  const end = formatMinutes(Math.min(suggestedStart + 60, 24 * 60));
+  const end = formatMinutes(Math.min(suggestedStart + 30, 23 * 60 + 55));
 
   return (
     <form
@@ -30,24 +28,24 @@ export function WorkLogAddForm({
 
       <label className="flex flex-col gap-1">
         <span className="text-xs text-muted">開始</span>
-        <select name="start" defaultValue={start} className={selectClass}>
-          {OPTIONS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        <input
+          type="time"
+          name="start"
+          step={TIME_STEP_MIN * 60}
+          defaultValue={start}
+          className={inputClass}
+        />
       </label>
 
       <label className="flex flex-col gap-1">
         <span className="text-xs text-muted">結束</span>
-        <select name="end" defaultValue={end} className={selectClass}>
-          {OPTIONS.map((t) => (
-            <option key={t} value={t}>
-              {t}
-            </option>
-          ))}
-        </select>
+        <input
+          type="time"
+          name="end"
+          step={TIME_STEP_MIN * 60}
+          defaultValue={end}
+          className={inputClass}
+        />
       </label>
 
       <label className="flex min-w-[14rem] flex-1 flex-col gap-1">
@@ -78,4 +76,3 @@ export function WorkLogAddForm({
 
 const inputClass =
   "rounded-lg border border-clay bg-cream/40 px-3 py-2 text-sm text-ink outline-none transition focus:border-sage-dark focus:bg-white";
-const selectClass = inputClass + " cursor-pointer";
