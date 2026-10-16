@@ -200,3 +200,47 @@ export function utcDayToKey(d: Date): string {
     d.getUTCDate()
   ).padStart(2, "0")}`;
 }
+
+/* ── 月曆用（同樣以 UTC 午夜為一天的基準，跟工作紀錄一致）────────── */
+
+/** "2026-10-16" → "2026-10" */
+export function monthKeyOf(dateKey: string): string {
+  return dateKey.slice(0, 7);
+}
+
+/** 月份前後移動："2026-10" + 1 → "2026-11" */
+export function shiftMonthKey(monthKey: string, delta: number): string {
+  const [y, m] = monthKey.split("-").map(Number);
+  const d = new Date(Date.UTC(y, m - 1 + delta, 1));
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+/** 該月的第一天與最後一天（UTC 午夜） */
+export function monthRange(monthKey: string): { from: Date; to: Date } {
+  const [y, m] = monthKey.split("-").map(Number);
+  return {
+    from: new Date(Date.UTC(y, m - 1, 1)),
+    to: new Date(Date.UTC(y, m, 0)),
+  };
+}
+
+/** 該月的每一天，依序排成 "YYYY-MM-DD" */
+export function monthDays(monthKey: string): string[] {
+  const [y, m] = monthKey.split("-").map(Number);
+  const last = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  return Array.from(
+    { length: last },
+    (_, i) => `${monthKey}-${String(i + 1).padStart(2, "0")}`
+  );
+}
+
+/** 該月 1 號是星期幾（以週一為 0） */
+export function monthLeadingBlanks(monthKey: string): number {
+  const { from } = monthRange(monthKey);
+  return (from.getUTCDay() + 6) % 7;
+}
+
+export function formatMonthLabel(monthKey: string): string {
+  const [y, m] = monthKey.split("-").map(Number);
+  return `${y} 年 ${m} 月`;
+}

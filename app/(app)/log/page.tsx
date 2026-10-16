@@ -4,10 +4,13 @@ import { WorkLogTable } from "@/components/work-log-table";
 import { WorkLogAddForm } from "@/components/work-log-add-form";
 import { WorkLogTimeline } from "@/components/work-log-timeline";
 import { copyWorkLogsAction } from "@/app/actions/work-logs";
+import { WorkLogMonth, type DaySummary } from "@/components/work-log-month";
 import {
   todayKey,
   dateKeyToUtcDay,
   utcDayToKey,
+  monthKeyOf,
+  monthRange,
   shiftDateKey,
   formatDateLabel,
   formatMinutes,
@@ -23,21 +26,26 @@ import {
 export default async function WorkLogPage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string }>;
+  searchParams: Promise<{ date?: string; month?: string }>;
 }) {
-  const { date } = await searchParams;
+  const { date, month } = await searchParams;
   const dateKey = /^\d{4}-\d{2}-\d{2}$/.test(date ?? "") ? date! : todayKey();
   const prevKey = shiftDateKey(dateKey, -1);
+  const monthKey = /^\d{4}-\d{2}$/.test(month ?? "")
+    ? month!
+    : monthKeyOf(dateKey);
+  const monthSpan = monthRange(monthKey);
 
-  const [rows, prevCount, recent] = await Promise.all([
+  const [rows, prevCount, monthRows] = await Promise.all([
     prisma.workLog.findMany({
       where: { date: dateKeyToUtcDay(dateKey) },
       orderBy: [{ startMin: "asc" }, { createdAt: "asc" }],
     }),
     prisma.workLog.count({ where: { date: dateKeyToUtcDay(prevKey) } }),
     prisma.workLog.findMany({
-      where: { date: { gte: dateKeyToUtcDay(shiftDateKey(dateKey, -6)) } },
-      select: { date: true, startMin: true, endMin: true },
+      where: { date: { gte: monthSpan.from, lte: monthSpan.to } },
+      select: { date: true, startMin: true, endMin: true, content: true },
+      orderBy: [{ date: "asc" }, { startMin: "asc" }],
     }),
   ]);
 
@@ -52,13 +60,16 @@ export default async function WorkLogPage({
     ? Math.min(Math.max(...rows.map((r) => r.endMin)), 23 * 60 + 30)
     : DAY_START_MIN;
 
-  // 最近 7 天各自記了多久
-  const perDay = new Map<string, number>();
-  for (const r of recent) {
+  // 當月每一天：總時數與當天做了哪些事
+  const byDay = new Map<string, DaySummary>();
+  for (const r of monthRows) {
     const key = utcDayToKey(r.date);
-    perDay.set(key, (perDay.get(key) ?? 0) + Math.max(r.endMin - r.startMin, 0));
+    const minutes = Math.max(r.endMin - r.startMin, 0);
+    const day = byDay.get(key) ?? { minutes: 0, items: [] };
+    day.minutes += minutes;
+    day.items.push({ content: r.content, minutes });
+    byDay.set(key, day);
   }
-  const week = Array.from({ length: 7 }, (_, i) => shiftDateKey(dateKey, -6 + i));
 
   return (
     <div className="space-y-6">
@@ -139,37 +150,11 @@ export default async function WorkLogPage({
         <WorkLogTable rows={rows} />
       )}
 
-      <div>
-        <h2 className="mb-2 text-sm font-medium text-muted">最近 7 天</h2>
-        <div className="grid grid-cols-7 gap-1.5">
-          {week.map((k) => {
-            const mins = perDay.get(k) ?? 0;
-            const isCurrent = k === dateKey;
-            return (
-              <Link
-                key={k}
-                href={`/log?date=${k}`}
-                className={
-                  "rounded-lg border px-2 py-2 text-center transition " +
-                  (isCurrent
-                    ? "border-sage-dark bg-gold"
-                    : "border-clay bg-white hover:bg-sand/60")
-                }
-              >
-                <p className="text-[11px] text-muted">{k.slice(5).replace("-", "/")}</p>
-                <p
-                  className={
-                    "mt-0.5 text-sm " +
-                    (mins > 0 ? "font-medium text-ink" : "text-muted/50")
-                  }
-                >
-                  {mins > 0 ? `${Math.round((mins / 60) * 10) / 10}h` : "—"}
-                </p>
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      <WorkLogMonth
+        monthKey={monthKey}
+        selectedKey={dateKey}
+        byDay={byDay}
+      />
     </div>
   );
 }
