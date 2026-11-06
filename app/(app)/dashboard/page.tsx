@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { QuickCapture } from "@/components/quick-capture";
 import { TaskItem } from "@/components/task-item";
 import { UpcomingDeadlines } from "@/components/upcoming-deadlines";
@@ -17,6 +18,7 @@ import {
  * 瑣事（待辦事項）和 RPM 的行動分開計數，不混成同一個數字。
  */
 export default async function DashboardPage() {
+  await requireUser();
   const thisWeekKey = currentWeekKey();
   const nextWeekKey = shiftWeekKey(thisWeekKey, 1);
   const thisWeek = weekRange(thisWeekKey);

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { WorkLogTable } from "@/components/work-log-table";
 import { WorkLogAddForm } from "@/components/work-log-add-form";
 import { WorkLogTimeline } from "@/components/work-log-timeline";
@@ -28,6 +29,7 @@ export default async function WorkLogPage({
 }: {
   searchParams: Promise<{ date?: string; month?: string }>;
 }) {
+  await requireUser();
   const { date, month } = await searchParams;
   const dateKey = /^\d{4}-\d{2}-\d{2}$/.test(date ?? "") ? date! : todayKey();
   const prevKey = shiftDateKey(dateKey, -1);

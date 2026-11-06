@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { TaskTable } from "@/components/task-table";
 import {
   currentWeekKey,
@@ -23,6 +24,7 @@ export default async function TaskHistoryPage({
 }: {
   searchParams: Promise<{ week?: string }>;
 }) {
+  await requireUser();
   const { week } = await searchParams;
   const thisWeekKey = currentWeekKey();
   // 只接受 YYYY-MM-DD，而且一律對齊到該週週一，避免網址被亂塞

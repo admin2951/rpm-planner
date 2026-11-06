@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { ResultCreatePanel } from "@/components/result-create-panel";
 import { UpcomingDeadlines } from "@/components/upcoming-deadlines";
 import { ResultCard } from "@/components/result-card";
@@ -18,6 +19,7 @@ export default async function ResultsPage({
 }: {
   searchParams: Promise<{ status?: string }>;
 }) {
+  await requireUser();
   const { status: statusRaw } = await searchParams;
   const activeTab = TABS.some((t) => t.key === statusRaw) ? statusRaw! : "ACTIVE";
 

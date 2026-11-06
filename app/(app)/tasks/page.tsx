@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { QuickCapture } from "@/components/quick-capture";
 import { TaskTable } from "@/components/task-table";
 import { currentWeekKey, shiftWeekKey, weekRange, formatWeekLabel } from "@/lib/date";
@@ -10,6 +11,7 @@ import { currentWeekKey, shiftWeekKey, weekRange, formatWeekLabel } from "@/lib/
  * 後面再接這週與上週的完成紀錄；更早的在 /tasks/history。
  */
 export default async function TasksPage() {
+  await requireUser();
   const thisWeekKey = currentWeekKey();
   const nextWeekKey = shiftWeekKey(thisWeekKey, 1);
   const lastWeekKey = shiftWeekKey(thisWeekKey, -1);

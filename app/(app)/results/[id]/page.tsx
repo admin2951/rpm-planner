@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { ResultEditForm } from "@/components/result-edit-form";
 import { NewTaskForm } from "@/components/new-task-form";
 import { TaskItem } from "@/components/task-item";
@@ -10,6 +11,7 @@ export default async function ResultDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  await requireUser();
   const { id } = await params;
   const [result, allResults] = await Promise.all([
     prisma.result.findUnique({

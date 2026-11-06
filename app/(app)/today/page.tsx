@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/auth";
 import { TaskItem } from "@/components/task-item";
 import { DailyNoteEditor } from "@/components/daily-note-editor";
 import {
@@ -15,6 +16,7 @@ export default async function TodayPage({
 }: {
   searchParams: Promise<{ date?: string }>;
 }) {
+  await requireUser();
   const { date } = await searchParams;
   const dateKey = date || todayKey();
   const from = startOfDay(dateKey);
