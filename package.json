@@ -9,6 +9,7 @@
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
+    "set-password": "node scripts/set-password.mjs",
     "db:reset": "prisma db push --force-reset && tsx prisma/seed.ts"
   },
   "prisma": {
