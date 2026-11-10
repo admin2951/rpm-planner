@@ -9,10 +9,10 @@ import {
 
 const WEEKDAYS = ["一", "二", "三", "四", "五", "六", "日"];
 
-export type TaskDay = { title: string; done: boolean }[];
+export type TaskDay = { title: string }[];
 
 /**
- * 待辦事項的月曆：每一格列出當天截止的事情，
+ * 待辦事項的月曆：每一格列出當天截止、還沒做完的事情（做完就消失），
  * 點一下就在下方顯示那天要完成的完整清單。
  */
 export function TaskMonth({
@@ -28,10 +28,7 @@ export function TaskMonth({
 }) {
   const days = monthDays(monthKey);
   const blanks = monthLeadingBlanks(monthKey);
-  const openThisMonth = days.reduce(
-    (sum, k) => sum + (byDay.get(k)?.filter((t) => !t.done).length ?? 0),
-    0
-  );
+  const openThisMonth = days.reduce((sum, k) => sum + (byDay.get(k)?.length ?? 0), 0);
   const href = (day: string, month: string) => `/tasks?day=${day}&month=${month}`;
 
   return (
@@ -82,7 +79,7 @@ export function TaskMonth({
 
         {days.map((key) => {
           const tasks = byDay.get(key) ?? [];
-          const open = tasks.filter((t) => !t.done);
+          const open = tasks;
           const selected = key === selectedKey;
           const isToday = key === todayKey;
           const overdue = key < todayKey && open.length > 0;
@@ -128,10 +125,7 @@ export function TaskMonth({
                     <p
                       key={i}
                       title={t.title}
-                      className={
-                        "truncate text-[10px] leading-tight " +
-                        (t.done ? "text-muted line-through" : "text-ink")
-                      }
+                      className="truncate text-[10px] leading-tight text-ink"
                     >
                       {t.title}
                     </p>

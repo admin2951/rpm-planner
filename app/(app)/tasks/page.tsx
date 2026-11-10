@@ -65,15 +65,15 @@ export default async function TasksPage({
     unscheduled,
     doneRecent,
   ] = await Promise.all([
+      // 月曆與當天清單只放還沒做完的：打勾完成就從這裡消失（完成的看下方「這週完成」）
       prisma.task.findMany({
-        where: { ...chore, dueDate: { gte: monthFrom, lt: monthTo } },
-        select: { title: true, status: true, dueDate: true },
+        where: { ...open, dueDate: { gte: monthFrom, lt: monthTo } },
+        select: { title: true, dueDate: true },
         orderBy: byDue,
       }),
-      // 選定那天截止的事（含已完成的，看得到當天做了哪些）
       prisma.task.findMany({
-        where: { ...chore, dueDate: { gte: dayFrom, lt: dayTo } },
-        orderBy: [{ status: "asc" }, { order: "asc" }, { createdAt: "asc" }],
+        where: { ...open, dueDate: { gte: dayFrom, lt: dayTo } },
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
       }),
       prisma.task.findMany({
         where: { ...open, dueDate: { lt: thisWeek.from } },
@@ -113,18 +113,16 @@ export default async function TasksPage({
     (t) => t.completedAt && t.completedAt < thisWeek.from
   );
 
-  // 月曆每一格：當天截止的事，沒做完的排前面
+  // 月曆每一格：當天截止、還沒做完的事
   const byDay = new Map<string, TaskDay>();
   for (const t of monthTasks) {
     if (!t.dueDate) continue;
     const key = utcDayToKey(t.dueDate);
     const list = byDay.get(key) ?? [];
-    list.push({ title: t.title, done: t.status === "DONE" });
+    list.push({ title: t.title });
     byDay.set(key, list);
   }
-  for (const list of byDay.values()) list.sort((a, b) => Number(a.done) - Number(b.done));
 
-  const dayOpen = dayTasks.filter((t) => t.status !== "DONE").length;
   const dayTitle =
     selectedKey === today ? `今天要完成的事` : `${formatDayLabel(selectedKey)}要完成的事`;
 
@@ -147,16 +145,15 @@ export default async function TasksPage({
       <div>
         <div className="mb-1 flex items-baseline gap-2">
           <h2 className="text-sm font-semibold text-ink">
-            {dayTitle}（{dayOpen}）
+            {dayTitle}（{dayTasks.length}）
           </h2>
-          <span className="text-xs text-muted">
-            {selectedKey === today ? formatDayLabel(selectedKey) : ""}
-            {dayTasks.length > dayOpen ? `　已完成 ${dayTasks.length - dayOpen} 件` : ""}
-          </span>
+          {selectedKey === today && (
+            <span className="text-xs text-muted">{formatDayLabel(selectedKey)}</span>
+          )}
         </div>
         {dayTasks.length === 0 ? (
           <p className="rounded-lg border border-clay bg-white px-3 py-3 text-sm text-muted">
-            這天沒有截止的事情。
+            這天沒有還沒做完的事情。
           </p>
         ) : (
           <TaskTable tasks={dayTasks} />
