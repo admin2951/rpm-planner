@@ -240,6 +240,26 @@ export function monthLeadingBlanks(monthKey: string): number {
   return (from.getUTCDay() + 6) % 7;
 }
 
+/**
+ * 台灣時間的今天："YYYY-MM-DD"。
+ * Vercel 伺服器是 UTC，直接用 todayKey() 的話，台灣凌晨 0–8 點會被當成前一天。
+ */
+export function taipeiTodayKey(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Taipei",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
+/** "2026-11-10" → "11月10日（週二）" */
+export function formatDayLabel(dateKey: string): string {
+  const d = dateKeyToUtcDay(dateKey);
+  const weekday = ["日", "一", "二", "三", "四", "五", "六"][d.getUTCDay()];
+  return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日（週${weekday}）`;
+}
+
 export function formatMonthLabel(monthKey: string): string {
   const [y, m] = monthKey.split("-").map(Number);
   return `${y} 年 ${m} 月`;
