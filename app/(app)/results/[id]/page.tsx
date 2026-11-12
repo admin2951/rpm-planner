@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth";
 import { ResultEditForm } from "@/components/result-edit-form";
 import { NewTaskForm } from "@/components/new-task-form";
 import { TaskItem } from "@/components/task-item";
+import { SectionTitle } from "@/components/section-title";
 
 export default async function ResultDetailPage({
   params,
@@ -45,7 +46,7 @@ export default async function ResultDetailPage({
       <ResultEditForm result={result} />
 
       <div>
-        <h2 className="text-sm font-semibold text-muted">M・大規模行動計畫（MAP）</h2>
+        <SectionTitle title="M・大規模行動計畫（MAP）" />
         <p className="mb-3 mt-0.5 text-xs text-muted">
           要達成這個結果，你必須採取哪些具體行動？
         </p>

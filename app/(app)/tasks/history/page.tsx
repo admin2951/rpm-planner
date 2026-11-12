@@ -12,6 +12,7 @@ import {
   toDateKey,
 } from "@/lib/date";
 import { PageTitle } from "@/components/page-title";
+import { SectionTitle } from "@/components/section-title";
 
 /** 一頁顯示幾週 */
 const WEEKS_PER_PAGE = 8;
@@ -118,17 +119,18 @@ export default async function TaskHistoryPage({
         const list = groups.get(key)!;
         return (
           <div key={key}>
-            <div className="mb-1 flex items-baseline gap-2">
-              <h2 className="text-sm font-semibold text-ink">
-                {key === thisWeekKey
+            <SectionTitle
+              title={
+                key === thisWeekKey
                   ? "這週完成"
                   : key === shiftWeekKey(thisWeekKey, -1)
                     ? "上週完成"
-                    : "完成"}
-                （{list.length}）
-              </h2>
-              <span className="text-xs text-muted">{formatWeekLabel(key)}</span>
-            </div>
+                    : "完成"
+              }
+              count={list.length}
+            >
+              {formatWeekLabel(key)}
+            </SectionTitle>
             <TaskTable tasks={list} />
           </div>
         );

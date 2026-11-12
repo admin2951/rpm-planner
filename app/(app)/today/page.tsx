@@ -11,6 +11,7 @@ import {
   formatDateLabel,
 } from "@/lib/date";
 import { PageTitle } from "@/components/page-title";
+import { SectionTitle } from "@/components/section-title";
 
 export default async function TodayPage({
   searchParams,
@@ -80,7 +81,7 @@ export default async function TodayPage({
       </div>
 
       <div>
-        <h2 className="mb-2 text-sm font-semibold text-muted">今日待辦（到期）</h2>
+        <SectionTitle title="今日待辦" count={dueTasks.length}>到期</SectionTitle>
         <div className="space-y-2">
           {dueTasks.length === 0 && <p className="text-sm text-muted">這天沒有到期的項目。</p>}
           {dueTasks.map((t) => (
@@ -90,7 +91,7 @@ export default async function TodayPage({
       </div>
 
       <div>
-        <h2 className="mb-2 text-sm font-semibold text-muted">今日已完成</h2>
+        <SectionTitle title="今日已完成" count={completedTasks.length} />
         <div className="space-y-2">
           {completedTasks.length === 0 && (
             <p className="text-sm text-muted">這天還沒有完成的項目。</p>
@@ -102,7 +103,7 @@ export default async function TodayPage({
       </div>
 
       <div>
-        <h2 className="mb-2 text-sm font-semibold text-muted">每日心得</h2>
+        <SectionTitle title="每日心得" />
         <DailyNoteEditor dateKey={dateKey} content={note?.content ?? ""} />
       </div>
     </div>

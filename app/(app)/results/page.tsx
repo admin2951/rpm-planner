@@ -54,7 +54,7 @@ export default async function ResultsPage({
   return (
     <div className="space-y-6">
       <div>
-        <PageTitle en="RPM">成果・理由・行動計畫</PageTitle>
+        <PageTitle en="Results · Purpose · Massive action">RPM</PageTitle>
         <div className="mt-2 grid gap-1.5 text-sm text-muted sm:grid-cols-3">
           <p>
             <span className="font-semibold text-sage-dark">R・成果</span>：你要達成的具體、可衡量結果

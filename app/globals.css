@@ -1,36 +1,36 @@
 @import "tailwindcss";
 
 /*
- * 設計系統：冷淺灰底 + 深咖啡黑字 + 橘色點綴。
- *   版面：大面積留白、細線分隔、白色圓角區塊、膠囊形按鈕
- *   字體：中文粗黑體（Noto Sans TC），英文大標用緊排的無襯線（Inter Tight）
+ * 設計系統：近白的冷灰底 + 炭灰字，幾乎不用彩色。
+ *   版面：頂部導覽列、細線分隔、白色區塊、小圓角
+ *   字體：英文與數字用緊排的 grotesk（Inter Tight），中文 Noto Sans TC 中等字重
+ *   標題：一行「● 大寫小標」，下面接大字標題
  *
  * 色彩代號沿用舊名稱（cream / sage-dark …），全站元件不用改 class 就會換色：
- *   sage / sage-dark / moss  → 橘色系（點綴 / 主色 / 深一階）
- *   gold / forest            → 淡橘底 / 淡橘底上的字（選取狀態）
+ *   sage / sage-dark / moss  → 炭灰（圓點 / 主要按鈕與連結 / hover 更深）
+ *   gold / forest            → 淡藍紫灰（導覽按鈕、選取狀態）/ 上面的字
  */
 @theme {
-  --color-cream: #ebeeee; /* 頁面底色：冷淺灰（#e2e6e7 再調淡一點） */
-  --color-sand: #f4f6f6; /* 次層填色：表頭、hover（比底色亮，放在白色區塊裡用） */
-  --color-clay: #d5dbdc; /* 分隔線、區塊邊框：同色系冷灰 */
-  --color-sage: #ff7b00; /* 亮橘：點綴、圖示 */
-  --color-sage-dark: #e36c00; /* 主色橘：按鈕、連結、強調（比亮橘深一點，白字看得清楚） */
-  --color-moss: #b85500; /* 深橘：hover */
-  --color-gold: #ffe9d6; /* 淡橘底：選取狀態 */
-  --color-forest: #8a3f00; /* 淡橘底上的字 */
-  --color-ink: #281b1b; /* 主文字：深咖啡黑 */
-  --color-muted: #6f6b6b; /* 次要文字：偏中性的灰 */
+  --color-cream: #f3f4f7; /* 頁面底色：近白的冷灰 */
+  --color-sand: #f6f7f9; /* 次層填色：表頭、hover（放在白色區塊裡用） */
+  --color-clay: #e1e2e7; /* 分隔線、區塊邊框：細而淡 */
+  --color-sage: #2c2d32; /* 圓點、小圖示 */
+  --color-sage-dark: #2c2d32; /* 主要按鈕、連結、強調 */
+  --color-moss: #151619; /* hover 時更深一階 */
+  --color-gold: #e8e9f5; /* 淡藍紫灰：導覽按鈕、選取狀態 */
+  --color-forest: #2c2d32; /* 淡藍紫灰上的字 */
+  --color-ink: #2c2d32; /* 主文字：炭灰 */
+  --color-muted: #696a6f; /* 次要文字 */
 
   --font-display: "Inter Tight", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
-  --font-sans: "Noto Sans TC", "Inter Tight", "PingFang TC", "Microsoft JhengHei",
+  --font-sans: "Inter Tight", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
     system-ui, sans-serif;
-  /* 舊的 font-serif 一律改走黑體，維持整站同一種調性 */
   --font-serif: var(--font-sans);
 
-  /* 圓角整體放大一點，區塊看起來比較柔和 */
-  --radius-lg: 0.875rem;
-  --radius-xl: 1.25rem;
-  --radius-2xl: 1.75rem;
+  /* 小圓角：按鈕和區塊都是方中帶一點圓 */
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
 }
 
 :root {
@@ -43,20 +43,19 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   font-weight: 400;
-  letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* 標題一律粗黑體 */
+/* 標題：中等字重、字距收緊，不用粗體 */
 h1,
 h2,
 h3 {
-  font-family: var(--font-sans);
-  letter-spacing: 0.04em;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 h1 {
-  font-weight: 700;
+  font-weight: 500;
 }
 
 ::-webkit-scrollbar {
@@ -81,6 +80,6 @@ textarea:focus-visible,
 select:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-sage-dark);
+  outline: 2px solid var(--color-ink);
   outline-offset: 1px;
 }

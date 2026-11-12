@@ -13,6 +13,7 @@ import {
   daysUntil,
 } from "@/lib/date";
 import { PageTitle } from "@/components/page-title";
+import { SectionTitle } from "@/components/section-title";
 
 /**
  * 總覽＝三個問題的摘要：還有什麼沒做完 / 這週要做什麼 / 下週要做什麼。
@@ -137,9 +138,9 @@ export default async function DashboardPage() {
 
       {needsAttention.length > 0 && (
         <div>
-          <h2 className="mb-2 text-sm font-semibold text-muted">
-            需要處理（逾期與這週到期）
-          </h2>
+          <SectionTitle title="需要處理" count={needsAttention.length}>
+            逾期與這週到期
+          </SectionTitle>
           <div className="space-y-2">
             {needsAttention.map((t) => (
               <TaskItem key={t.id} task={t} results={allResults} />
@@ -149,12 +150,11 @@ export default async function DashboardPage() {
       )}
 
       <div>
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-muted">進行中的 RPM</h2>
-          <Link href="/results" className="text-xs text-sage-dark hover:underline">
+        <SectionTitle title="進行中的 RPM" count={activeResults.length}>
+          <Link href="/results" className="text-sage-dark underline underline-offset-4 hover:text-moss">
             查看全部
           </Link>
-        </div>
+        </SectionTitle>
         {activeResults.length === 0 && (
           <p className="text-sm text-muted">還沒有進行中的 RPM 條目，到「RPM」頁新增一個吧。</p>
         )}

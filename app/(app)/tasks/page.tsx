@@ -4,6 +4,7 @@ import { requireUser } from "@/lib/auth";
 import { QuickCapture } from "@/components/quick-capture";
 import { TaskTable } from "@/components/task-table";
 import { TaskMonth, type TaskDay } from "@/components/task-month";
+import { SectionTitle } from "@/components/section-title";
 import {
   currentWeekKey,
   shiftWeekKey,
@@ -144,14 +145,9 @@ export default async function TasksPage({
       />
 
       <div>
-        <div className="mb-1 flex items-baseline gap-2">
-          <h2 className="text-sm font-semibold text-ink">
-            {dayTitle}（{dayTasks.length}）
-          </h2>
-          {selectedKey === today && (
-            <span className="text-xs text-muted">{formatDayLabel(selectedKey)}</span>
-          )}
-        </div>
+        <SectionTitle title={dayTitle} count={dayTasks.length}>
+          {selectedKey === today ? formatDayLabel(selectedKey) : null}
+        </SectionTitle>
         {dayTasks.length === 0 ? (
           <p className="rounded-lg border border-clay bg-white px-3 py-3 text-sm text-muted">
             這天沒有還沒做完的事情。
@@ -249,17 +245,9 @@ function Section({
 
   return (
     <div>
-      <div className="mb-1 flex items-baseline gap-2">
-        <h2
-          className={
-            "text-sm font-semibold " +
-            (tone === "danger" && count > 0 ? "text-red-600" : "text-ink")
-          }
-        >
-          {title}（{count}）
-        </h2>
-        {subtitle && <span className="text-xs text-muted">{subtitle}</span>}
-      </div>
+      <SectionTitle title={title} count={count} tone={tone}>
+        {subtitle}
+      </SectionTitle>
       {hint && count > 0 && <p className="mb-2 text-xs text-muted">{hint}</p>}
       {count === 0 ? (
         <p className="rounded-lg border border-clay bg-white px-3 py-3 text-sm text-muted">
