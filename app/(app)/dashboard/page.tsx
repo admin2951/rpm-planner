@@ -12,6 +12,7 @@ import {
   formatDeadline,
   daysUntil,
 } from "@/lib/date";
+import { PageTitle } from "@/components/page-title";
 
 /**
  * 總覽＝三個問題的摘要：還有什麼沒做完 / 這週要做什麼 / 下週要做什麼。
@@ -96,7 +97,7 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-medium text-ink">總覽</h1>
+        <PageTitle en="Overview">總覽</PageTitle>
         <p className="mt-1 text-sm text-muted">
           還有什麼沒做完、這週要做什麼、下週要做什麼。
         </p>

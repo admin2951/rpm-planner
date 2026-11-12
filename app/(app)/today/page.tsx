@@ -10,6 +10,7 @@ import {
   shiftDateKey,
   formatDateLabel,
 } from "@/lib/date";
+import { PageTitle } from "@/components/page-title";
 
 export default async function TodayPage({
   searchParams,
@@ -51,7 +52,7 @@ export default async function TodayPage({
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-medium text-ink">{formatDateLabel(dateKey)}</h1>
+          <PageTitle en="Today">{formatDateLabel(dateKey)}</PageTitle>
           <p className="mt-1 text-sm text-muted">今日到期事項與已完成的紀錄</p>
         </div>
         <div className="flex items-center gap-2 text-sm">

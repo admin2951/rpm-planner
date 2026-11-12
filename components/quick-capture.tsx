@@ -20,9 +20,9 @@ export function QuickCapture({ placeholder = "隨手記下任何想法或代辦�
     <form
       ref={formRef}
       action={formAction}
-      className="flex items-center gap-2 rounded-lg border border-clay bg-white p-2"
+      className="flex items-center gap-2 rounded-full border border-clay bg-white py-1.5 pl-4 pr-1.5"
     >
-      <span className="pl-1 text-lg text-sage">＋</span>
+      <span className="text-lg text-sage">＋</span>
       <input
         name="title"
         placeholder={placeholder}

@@ -64,7 +64,7 @@ export function TaskTable({
               className={
                 "flex h-5 w-5 items-center justify-center rounded-full border text-xs transition " +
                 (t.status === "DONE"
-                  ? "border-sage-dark bg-sage-dark text-cream"
+                  ? "border-sage-dark bg-sage-dark text-white"
                   : "border-clay text-transparent hover:border-sage-dark")
               }
             >

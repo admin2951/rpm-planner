@@ -98,7 +98,7 @@ export function WorkLogMonth({
                   className={
                     "text-[11px] " +
                     (isToday
-                      ? "rounded bg-sage-dark px-1 font-medium text-cream"
+                      ? "rounded bg-sage-dark px-1 font-medium text-white"
                       : "text-muted")
                   }
                 >

@@ -15,12 +15,12 @@ export function SubmitButton({
       type="submit"
       disabled={pending}
       className={
-        "inline-flex items-center justify-center gap-2 rounded-lg bg-sage-dark px-5 py-2.5 text-sm font-medium text-cream transition hover:bg-moss disabled:opacity-60 " +
+        "inline-flex items-center justify-center gap-2 rounded-full bg-sage-dark px-5 py-2.5 text-sm font-bold tracking-[0.08em] text-white transition hover:bg-moss disabled:opacity-60 " +
         className
       }
     >
       {pending && (
-        <span className="h-4 w-4 animate-spin rounded-full border-2 border-cream/40 border-t-cream" />
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
       )}
       {children}
     </button>

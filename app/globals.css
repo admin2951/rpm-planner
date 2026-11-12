@@ -1,27 +1,36 @@
 @import "tailwindcss";
 
 /*
- * 色彩與字體取自品牌提案的設計系統：
- *   深青 #00585E（主色）／亮青 #26BABD（點綴）／黑白＋暖灰留白
- * 調性：大面積留白、細線分隔、襯線標題配細體內文。
+ * 設計系統：暖灰底 + 深咖啡黑字 + 橘色點綴。
+ *   版面：大面積留白、細線分隔、白色圓角區塊、膠囊形按鈕
+ *   字體：中文粗黑體（Noto Sans TC），英文大標用緊排的無襯線（Inter Tight）
+ *
+ * 色彩代號沿用舊名稱（cream / sage-dark …），全站元件不用改 class 就會換色：
+ *   sage / sage-dark / moss  → 橘色系（點綴 / 主色 / 深一階）
+ *   gold / forest            → 淡橘底 / 淡橘底上的字（選取狀態）
  */
 @theme {
-  --color-cream: #f1efec; /* 頁面底色：暖灰留白 */
-  --color-sand: #e4e2de; /* 次層填色：表頭、hover */
-  --color-clay: #d4d2ce; /* 分隔線 */
-  --color-sage: #26babd; /* 亮青：點綴、圖示 */
-  --color-sage-dark: #00585e; /* 深青：主色、連結、按鈕 */
-  --color-moss: #003f44; /* 更深的青：hover、標題 */
-  --color-gold: #d5efef; /* 淡青底：選取狀態 */
-  --color-forest: #00484d; /* 淡青底上的字 */
-  --color-ink: #15201f; /* 主文字：帶青調的近黑 */
-  --color-muted: #66706f; /* 次要文字 */
+  --color-cream: #ede6e6; /* 頁面底色：帶點粉的暖灰 */
+  --color-sand: #f5f0f0; /* 次層填色：表頭、hover（比底色亮，放在白色區塊裡用） */
+  --color-clay: #dccfcf; /* 分隔線、區塊邊框 */
+  --color-sage: #ff7b00; /* 亮橘：點綴、圖示 */
+  --color-sage-dark: #e36c00; /* 主色橘：按鈕、連結、強調（比亮橘深一點，白字看得清楚） */
+  --color-moss: #b85500; /* 深橘：hover */
+  --color-gold: #ffe9d6; /* 淡橘底：選取狀態 */
+  --color-forest: #8a3f00; /* 淡橘底上的字 */
+  --color-ink: #281b1b; /* 主文字：深咖啡黑 */
+  --color-muted: #7a6b6b; /* 次要文字 */
 
-  /* IvyJournal／MiSans 非開源，改用最接近的免費字體 */
-  --font-serif: "Instrument Serif", "Noto Serif TC", "Songti TC", "PingFang TC",
-    Georgia, serif;
-  --font-sans: "Inter", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
+  --font-display: "Inter Tight", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
+  --font-sans: "Noto Sans TC", "Inter Tight", "PingFang TC", "Microsoft JhengHei",
     system-ui, sans-serif;
+  /* 舊的 font-serif 一律改走黑體，維持整站同一種調性 */
+  --font-serif: var(--font-sans);
+
+  /* 圓角整體放大一點，區塊看起來比較柔和 */
+  --radius-lg: 0.875rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.75rem;
 }
 
 :root {
@@ -32,18 +41,22 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  /* 內文走細體無襯線，標題才用襯線 */
   font-family: var(--font-sans);
   font-weight: 400;
+  letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* 頁面標題一律襯線，對應提案裡「襯線標題＋細字內文」的排版 */
+/* 標題一律粗黑體 */
+h1,
+h2,
+h3 {
+  font-family: var(--font-sans);
+  letter-spacing: 0.04em;
+}
 h1 {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-weight: 700;
 }
 
 ::-webkit-scrollbar {
@@ -63,7 +76,6 @@ h1 {
   color: var(--color-forest);
 }
 
-/* 表單元素聚焦時用品牌深青，而不是瀏覽器預設藍 */
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,

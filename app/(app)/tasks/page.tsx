@@ -18,6 +18,7 @@ import {
   shiftDateKey,
   formatDayLabel,
 } from "@/lib/date";
+import { PageTitle } from "@/components/page-title";
 
 /**
  * 這一頁只放「平常的瑣事」——不含 RPM 底下的行動項目（那些在 RPM 頁看）。
@@ -129,7 +130,7 @@ export default async function TasksPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-medium text-ink">待辦事項</h1>
+        <PageTitle en="To Do">待辦事項</PageTitle>
         <p className="mt-1 text-sm text-muted">
           平常的瑣事。改任何一格都會自動存檔；改截止日就會自動換到對應的區塊。
         </p>

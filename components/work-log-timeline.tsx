@@ -31,7 +31,7 @@ export function WorkLogTimeline({
               style={{ left: `${left}%`, width: `${width}%` }}
               className="absolute inset-y-0 flex items-center overflow-hidden border-r border-white/30 bg-sage-dark px-1.5"
             >
-              <span className="truncate text-[11px] leading-none text-cream">
+              <span className="truncate text-[11px] leading-none text-white">
                 {r.content}
               </span>
             </div>

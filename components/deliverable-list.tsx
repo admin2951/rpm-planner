@@ -37,7 +37,7 @@ function DeliverableRow({ deliverable }: { deliverable: Deliverable }) {
             className={
               "flex h-4 w-4 items-center justify-center rounded-full border text-[10px] transition " +
               (deliverable.done
-                ? "border-sage-dark bg-sage-dark text-cream"
+                ? "border-sage-dark bg-sage-dark text-white"
                 : "border-clay text-transparent hover:border-sage-dark")
             }
           >

@@ -11,6 +11,7 @@ import {
   startOfDay,
   toDateKey,
 } from "@/lib/date";
+import { PageTitle } from "@/components/page-title";
 
 /** 一頁顯示幾週 */
 const WEEKS_PER_PAGE = 8;
@@ -67,7 +68,7 @@ export default async function TaskHistoryPage({
     <div className="space-y-6">
       <div>
         <div className="flex items-baseline gap-3">
-          <h1 className="text-2xl font-medium text-ink">完成紀錄</h1>
+          <PageTitle en="Done">完成紀錄</PageTitle>
           <Link href="/tasks" className="text-sm text-sage-dark hover:underline">
             ← 回待辦事項
           </Link>

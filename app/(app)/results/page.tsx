@@ -6,6 +6,7 @@ import { UpcomingDeadlines } from "@/components/upcoming-deadlines";
 import { ResultCard } from "@/components/result-card";
 import { daysUntil } from "@/lib/date";
 import type { ResultStatus } from "@prisma/client";
+import { PageTitle } from "@/components/page-title";
 
 const TABS: { key: string; label: string }[] = [
   { key: "ACTIVE", label: "進行中" },
@@ -53,7 +54,7 @@ export default async function ResultsPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-medium text-ink">RPM</h1>
+        <PageTitle en="RPM">成果・理由・行動計畫</PageTitle>
         <div className="mt-2 grid gap-1.5 text-sm text-muted sm:grid-cols-3">
           <p>
             <span className="font-semibold text-sage-dark">R・成果</span>：你要達成的具體、可衡量結果

@@ -2,21 +2,21 @@ import { LoginForm } from "@/components/login-form";
 
 export default function LoginPage() {
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-sage-dark px-4">
-      {/* 提案裡的「發光」意象：一圈柔和的亮青光暈 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-sage opacity-20 blur-3xl"
-      />
-      <div className="relative w-full max-w-sm rounded-2xl border border-white/10 bg-white p-8 shadow-xl">
-        <p className="flex items-center justify-center gap-2 text-center font-serif text-3xl font-medium tracking-wide text-moss">
-          <span className="h-2 w-2 rounded-full bg-sage" aria-hidden />
-          RPM系統
-        </p>
-        <p className="mt-2 text-center text-sm font-light text-muted">
-          登入以開始規劃你的 R・P・M
-        </p>
-        <div className="mt-7">
+    <div className="flex min-h-screen items-center justify-center bg-cream px-4">
+      <div className="w-full max-w-sm">
+        <div className="mb-6 border-b border-ink/80 pb-5">
+          <p
+            aria-hidden
+            className="font-display text-6xl font-medium leading-none tracking-[-0.04em] text-ink"
+          >
+            RPM
+          </p>
+          <h1 className="mt-2 text-sm font-bold tracking-[0.12em] text-sage-dark">
+            成果・理由・行動計畫
+          </h1>
+          <p className="mt-3 text-sm text-muted">登入以開始規劃你的 R・P・M</p>
+        </div>
+        <div className="rounded-2xl bg-white p-8">
           <LoginForm />
         </div>
       </div>

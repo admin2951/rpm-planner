@@ -19,6 +19,7 @@ import {
   DAY_START_MIN,
   DAY_END_MIN,
 } from "@/lib/date";
+import { PageTitle } from "@/components/page-title";
 
 /**
  * 工作紀錄：一天之內每個時段做了什麼。
@@ -77,7 +78,7 @@ export default async function WorkLogPage({
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-medium text-ink">工作紀錄</h1>
+          <PageTitle en="Work Log">工作紀錄</PageTitle>
           <p className="mt-1 text-sm text-muted">
             {formatDateLabel(dateKey)}　每個時段做了什麼，記下來就看得到一整天。
           </p>

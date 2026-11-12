@@ -6,12 +6,10 @@ export const metadata: Metadata = {
   description: "個人 RPM 系統",
 };
 
-/** 標題襯線 + 內文細體無襯線，中英文各一套 */
+/** 中文粗黑體 + 英文大標用的緊排無襯線 */
 const FONTS =
-  "https://fonts.googleapis.com/css2?family=Inter:wght@300..600" +
-  "&family=Instrument+Serif:ital@0;1" +
-  "&family=Noto+Sans+TC:wght@300;400;500;700" +
-  "&family=Noto+Serif+TC:wght@400;500;600&display=swap";
+  "https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400..700" +
+  "&family=Noto+Sans+TC:wght@400;500;700&display=swap";
 
 export default function RootLayout({
   children,

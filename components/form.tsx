@@ -1,5 +1,5 @@
 const inputClass =
-  "w-full rounded-lg border border-clay bg-cream/40 px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-sage-dark focus:bg-white focus:ring-2 focus:ring-sage-dark/20";
+  "w-full rounded-lg border border-clay bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition focus:border-sage-dark focus:ring-2 focus:ring-sage-dark/20";
 
 export function FormRow({
   label,
