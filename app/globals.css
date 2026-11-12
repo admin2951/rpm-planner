@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * 設計系統：暖灰底 + 深咖啡黑字 + 橘色點綴。
+ * 設計系統：冷淺灰底 + 深咖啡黑字 + 橘色點綴。
  *   版面：大面積留白、細線分隔、白色圓角區塊、膠囊形按鈕
  *   字體：中文粗黑體（Noto Sans TC），英文大標用緊排的無襯線（Inter Tight）
  *
@@ -10,16 +10,16 @@
  *   gold / forest            → 淡橘底 / 淡橘底上的字（選取狀態）
  */
 @theme {
-  --color-cream: #ede6e6; /* 頁面底色：帶點粉的暖灰 */
-  --color-sand: #f5f0f0; /* 次層填色：表頭、hover（比底色亮，放在白色區塊裡用） */
-  --color-clay: #dccfcf; /* 分隔線、區塊邊框 */
+  --color-cream: #ebeeee; /* 頁面底色：冷淺灰（#e2e6e7 再調淡一點） */
+  --color-sand: #f4f6f6; /* 次層填色：表頭、hover（比底色亮，放在白色區塊裡用） */
+  --color-clay: #d5dbdc; /* 分隔線、區塊邊框：同色系冷灰 */
   --color-sage: #ff7b00; /* 亮橘：點綴、圖示 */
   --color-sage-dark: #e36c00; /* 主色橘：按鈕、連結、強調（比亮橘深一點，白字看得清楚） */
   --color-moss: #b85500; /* 深橘：hover */
   --color-gold: #ffe9d6; /* 淡橘底：選取狀態 */
   --color-forest: #8a3f00; /* 淡橘底上的字 */
   --color-ink: #281b1b; /* 主文字：深咖啡黑 */
-  --color-muted: #7a6b6b; /* 次要文字 */
+  --color-muted: #6f6b6b; /* 次要文字：偏中性的灰 */
 
   --font-display: "Inter Tight", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
   --font-sans: "Noto Sans TC", "Inter Tight", "PingFang TC", "Microsoft JhengHei",
