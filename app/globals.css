@@ -1,36 +1,49 @@
 @import "tailwindcss";
 
 /*
- * 設計系統：近白的冷灰底 + 炭灰字，幾乎不用彩色。
- *   版面：頂部導覽列、細線分隔、白色區塊、小圓角
- *   字體：英文與數字用緊排的 grotesk（Inter Tight），中文 Noto Sans TC 中等字重
- *   標題：一行「● 大寫小標」，下面接大字標題
+ * 設計系統：編輯雜誌式。骨白底 + 近黑咖啡字 + 鋼藍點綴，全部直角。
+ *   字體：大標 Epilogue（粗、字距極緊、行高壓扁），內文 Switzer，中文 Noto Sans TC
+ *   版面：大字標題配長破折號「——」、小寫標籤加上標編號、細線分隔、黑色方塊按鈕
  *
  * 色彩代號沿用舊名稱（cream / sage-dark …），全站元件不用改 class 就會換色：
- *   sage / sage-dark / moss  → 炭灰（圓點 / 主要按鈕與連結 / hover 更深）
- *   gold / forest            → 淡藍紫灰（導覽按鈕、選取狀態）/ 上面的字
+ *   sage       → 鋼藍：點綴大字、今天、圓點
+ *   sage-dark  → 近黑：主要按鈕、連結
+ *   gold       → 霧藍：選取狀態
+ *   white      → 淺骨白：原本的白色卡片改成比底色亮一階的骨白，整站沒有純白
  */
 @theme {
-  --color-cream: #f3f4f7; /* 頁面底色：近白的冷灰 */
-  --color-sand: #f6f7f9; /* 次層填色：表頭、hover（放在白色區塊裡用） */
-  --color-clay: #e1e2e7; /* 分隔線、區塊邊框：細而淡 */
-  --color-sage: #2c2d32; /* 圓點、小圖示 */
-  --color-sage-dark: #2c2d32; /* 主要按鈕、連結、強調 */
-  --color-moss: #151619; /* hover 時更深一階 */
-  --color-gold: #e8e9f5; /* 淡藍紫灰：導覽按鈕、選取狀態 */
-  --color-forest: #2c2d32; /* 淡藍紫灰上的字 */
-  --color-ink: #2c2d32; /* 主文字：炭灰 */
-  --color-muted: #696a6f; /* 次要文字 */
+  --color-cream: #edece2; /* 頁面底色：骨白 */
+  --color-sand: #e6e3d9; /* 次層填色：表頭、hover */
+  --color-clay: #cfcbbe; /* 分隔線、區塊邊框 */
+  --color-sage: #5a8db0; /* 鋼藍：點綴 */
+  --color-sage-dark: #1d1917; /* 主要按鈕、連結：近黑 */
+  --color-moss: #3a3330; /* hover */
+  --color-gold: #bfccd2; /* 霧藍：選取狀態 */
+  --color-forest: #1d1917; /* 霧藍上的字 */
+  --color-ink: #1d1917; /* 主文字：近黑咖啡 */
+  --color-muted: #6b655f; /* 次要文字 */
+  --color-white: #f4f3eb; /* 卡片：比底色亮一階的骨白 */
 
-  --font-display: "Inter Tight", "Helvetica Neue", Arial, "Noto Sans TC", sans-serif;
-  --font-sans: "Inter Tight", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei",
-    system-ui, sans-serif;
+  /* 逾期、刪除這類警示原本是紅色；改用色票裡的咖啡棕，整站不出現粉紅 */
+  --color-red-50: #f1e7da;
+  --color-red-100: #e9dac6;
+  --color-red-200: #d8bf9f;
+  --color-red-500: #906036;
+  --color-red-600: #855730;
+  --color-red-700: #6f4826;
+
+  --font-display: "Epilogue", "Switzer", Arial, "Noto Sans TC", sans-serif;
+  --font-sans: "Switzer", "Noto Sans TC", Arial, "Microsoft JhengHei", sans-serif;
   --font-serif: var(--font-sans);
 
-  /* 小圓角：按鈕和區塊都是方中帶一點圓 */
-  --radius-lg: 0.375rem;
-  --radius-xl: 0.5rem;
-  --radius-2xl: 0.75rem;
+  /* 全部直角 */
+  --radius-xs: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+  --radius-3xl: 0;
 }
 
 :root {
@@ -47,24 +60,38 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* 標題：中等字重、字距收緊，不用粗體 */
 h1,
 h2,
 h3 {
-  font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
-h1 {
-  font-weight: 500;
+
+/* 大字標題：Epilogue 粗體、字距極緊、行高壓扁 */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.07em;
+  line-height: 0.82;
+}
+
+/* 小寫標籤右上角的編號，例如 architecture ⁰¹ */
+.index {
+  font-family: var(--font-sans);
+  font-size: 0.6em;
+  vertical-align: super;
+  margin-left: 0.25em;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-clay);
-  border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-muted);
@@ -72,7 +99,7 @@ h1 {
 
 ::selection {
   background: var(--color-gold);
-  color: var(--color-forest);
+  color: var(--color-ink);
 }
 
 input:focus-visible,
@@ -80,6 +107,6 @@ textarea:focus-visible,
 select:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-ink);
-  outline-offset: 1px;
+  outline: 1px solid var(--color-ink);
+  outline-offset: 2px;
 }

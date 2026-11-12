@@ -12,24 +12,19 @@ const NAV = [
   { href: "/today", label: "今日" },
 ];
 
-const chip = "rounded-lg px-3 py-1.5 text-sm transition whitespace-nowrap";
-
-/** 頂部導覽列：左邊系統名稱，右邊一排淺灰小按鈕，下方一條細線 */
+/** 頂部：左邊超大的 RPM 字標，右邊一排文字連結，每個右上角帶編號 */
 export function AppHeader({ name }: { name: string }) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-clay bg-cream/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
-        <Link
-          href="/dashboard"
-          className="rounded-lg bg-gold px-3 py-1.5 font-display text-base font-semibold tracking-[-0.03em] text-ink"
-        >
-          RPM 系統
+    <header className="bg-cream">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-x-8 gap-y-4 px-6 pb-5 pt-6">
+        <Link href="/dashboard" className="display text-6xl text-ink sm:text-7xl" aria-label="RPM 系統首頁">
+          RPM
         </Link>
 
-        <nav className="flex items-center gap-1.5 overflow-x-auto">
-          {NAV.map((item) => {
+        <nav className="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-[15px]">
+          {NAV.map((item, i) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
@@ -37,21 +32,28 @@ export function AppHeader({ name }: { name: string }) {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={
-                  chip + " " + (active ? "bg-ink text-white" : "bg-gold text-ink hover:bg-clay")
+                  "transition " +
+                  (active
+                    ? "text-sage underline decoration-1 underline-offset-[6px]"
+                    : "text-ink hover:text-sage")
                 }
               >
                 {item.label}
+                <span className="index">{String(i + 1).padStart(2, "0")}</span>
               </Link>
             );
           })}
-          <span className="mx-1 hidden h-5 w-px bg-clay sm:block" aria-hidden />
-          <span className="hidden text-sm text-muted sm:block">{name}</span>
+          <span className="text-muted">／</span>
+          <span className="text-muted">{name}</span>
           <form action={logoutAction}>
-            <button type="submit" className={chip + " text-muted hover:bg-gold hover:text-ink"}>
+            <button type="submit" className="text-ink underline decoration-1 underline-offset-[6px] hover:text-sage">
               登出
             </button>
           </form>
         </nav>
+      </div>
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="h-px bg-ink" />
       </div>
     </header>
   );
