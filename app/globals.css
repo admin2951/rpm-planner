@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * 設計系統：編輯雜誌式。骨白底 + 近黑咖啡字 + 鋼藍點綴，全部直角。
+ * 設計系統：編輯雜誌式。淡灰骨白底 + 近黑咖啡字 + 鋼藍點綴，全部直角。
  *   字體：大標 Epilogue（粗、字距極緊、行高壓扁），內文 Switzer，中文 Noto Sans TC
  *   版面：大字標題配長破折號「——」、小寫標籤加上標編號、細線分隔、黑色方塊按鈕
  *
@@ -12,9 +12,9 @@
  *   white      → 淺骨白：原本的白色卡片改成比底色亮一階的骨白，整站沒有純白
  */
 @theme {
-  --color-cream: #edece2; /* 頁面底色：骨白 */
-  --color-sand: #e6e3d9; /* 次層填色：表頭、hover */
-  --color-clay: #cfcbbe; /* 分隔線、區塊邊框 */
+  --color-cream: #f4f4f1; /* 頁面底色：很淡、偏灰的骨白 */
+  --color-sand: #ebebe7; /* 次層填色：表頭、hover */
+  --color-clay: #d8d7d2; /* 分隔線、區塊邊框 */
   --color-sage: #5a8db0; /* 鋼藍：點綴 */
   --color-sage-dark: #1d1917; /* 主要按鈕、連結：近黑 */
   --color-moss: #3a3330; /* hover */
@@ -22,7 +22,7 @@
   --color-forest: #1d1917; /* 霧藍上的字 */
   --color-ink: #1d1917; /* 主文字：近黑咖啡 */
   --color-muted: #6b655f; /* 次要文字 */
-  --color-white: #f4f3eb; /* 卡片：比底色亮一階的骨白 */
+  --color-white: #fafaf8; /* 卡片：比底色亮一階、幾乎不帶黃 */
 
   /* 逾期、刪除這類警示原本是紅色；改用色票裡的咖啡棕，整站不出現粉紅 */
   --color-red-50: #f1e7da;
