@@ -1,6 +1,6 @@
 /**
- * 區塊標題：上方一條細黑線，標題右上角帶兩位數編號（件數），例如「這週 ⁰⁴」。
- * 件數為 0 時整行變淡。
+ * 區塊標題：粗體標題，旁邊一個藍綠小標籤放件數（例如「4 件」），右側放附註，下方一條細線。
+ * 件數為 0 時標籤改成灰色外框；警示區塊有件數時標籤改紅。
  */
 export function SectionTitle({
   title,
@@ -16,19 +16,23 @@ export function SectionTitle({
   const empty = count === 0;
   const danger = tone === "danger" && !empty;
   return (
-    <div className="mb-3 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-t border-ink pt-3">
-      <h2
-        className={
-          "text-2xl tracking-[-0.03em] " +
-          (empty ? "text-muted" : danger ? "text-red-700" : "text-ink")
-        }
-      >
-        {title}
-        {count !== undefined && (
-          <span className="index">{String(count).padStart(2, "0")}</span>
-        )}
-      </h2>
-      {children && <span className="text-sm text-muted">{children}</span>}
+    <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-ink pb-2.5 pt-4">
+      <h2 className={"text-lg " + (empty ? "text-muted" : "text-ink")}>{title}</h2>
+      {count !== undefined && (
+        <span
+          className={
+            "px-1.5 py-0.5 text-[11px] font-bold leading-none " +
+            (empty
+              ? "border border-clay text-muted"
+              : danger
+                ? "bg-red-600 text-white"
+                : "bg-sage text-white")
+          }
+        >
+          {count} 件
+        </span>
+      )}
+      {children && <span className="text-xs font-medium text-muted">{children}</span>}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export function SubmitButton({
       type="submit"
       disabled={pending}
       className={
-        "inline-flex items-center justify-center gap-2 bg-ink px-5 py-2.5 text-sm uppercase tracking-[0.04em] text-cream transition hover:bg-moss disabled:opacity-60 " +
+        "inline-flex items-center justify-center gap-3 bg-sage-dark px-5 py-2.5 text-sm font-bold text-white transition hover:bg-moss disabled:opacity-60 " +
         className
       }
     >
@@ -23,6 +23,7 @@ export function SubmitButton({
         <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
       )}
       {children}
+      <span aria-hidden className="font-normal">→</span>
     </button>
   );
 }

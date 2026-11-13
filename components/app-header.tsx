@@ -12,19 +12,24 @@ const NAV = [
   { href: "/today", label: "今日" },
 ];
 
-/** 頂部：左邊超大的 RPM 字標，右邊一排文字連結，每個右上角帶編號 */
+/** 頂部：左邊字標（大字 RPM + 兩行小字），右邊純文字導覽、細直線、細框按鈕 */
 export function AppHeader({ name }: { name: string }) {
   const pathname = usePathname();
 
   return (
-    <header className="bg-cream">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-end justify-between gap-x-8 gap-y-4 px-6 pb-5 pt-6">
-        <Link href="/dashboard" className="display text-6xl text-ink sm:text-7xl" aria-label="RPM 系統首頁">
-          RPM
+    <header className="sticky top-0 z-20 bg-cream/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-6 py-5">
+        <Link href="/dashboard" className="flex items-center gap-2.5" aria-label="RPM 系統首頁">
+          <span className="display text-[28px] font-bold tracking-[0.01em] text-ink">RPM</span>
+          <span className="text-[10px] font-bold leading-[1.25] tracking-[0.06em] text-ink">
+            成果・理由
+            <br />
+            行動計畫
+          </span>
         </Link>
 
-        <nav className="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-[15px]">
-          {NAV.map((item, i) => {
+        <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] font-bold">
+          {NAV.map((item) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link
@@ -32,28 +37,25 @@ export function AppHeader({ name }: { name: string }) {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={
-                  "transition " +
-                  (active
-                    ? "text-sage underline decoration-1 underline-offset-[6px]"
-                    : "text-ink hover:text-sage")
+                  "border-b-2 pb-0.5 transition " +
+                  (active ? "border-sage text-ink" : "border-transparent text-ink hover:border-ink")
                 }
               >
                 {item.label}
-                <span className="index">{String(i + 1).padStart(2, "0")}</span>
               </Link>
             );
           })}
-          <span className="text-muted">／</span>
-          <span className="text-muted">{name}</span>
+          <span className="hidden h-6 w-px bg-muted/50 sm:block" aria-hidden />
+          <span className="font-medium text-muted">{name}</span>
           <form action={logoutAction}>
-            <button type="submit" className="text-ink underline decoration-1 underline-offset-[6px] hover:text-sage">
-              登出
+            <button
+              type="submit"
+              className="flex items-center gap-3 border border-ink px-3 py-1.5 text-xs font-bold text-ink transition hover:bg-ink hover:text-white"
+            >
+              登出 <span aria-hidden>→</span>
             </button>
           </form>
         </nav>
-      </div>
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="h-px bg-ink" />
       </div>
     </header>
   );
